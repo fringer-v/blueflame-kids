@@ -1,0 +1,866 @@
+/* --------------------------- */
+/* Global Definitions: */
+
+:root {
+    --g-0: red; 
+    --g-1: #009DDE; 
+    --g-2: #FAAB00; 
+
+    --g--0: #FFB2BA; 
+    --g--1: #A2C4DE; 
+    --g--2: #FFF2B4;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+    background: #f1f1f1;
+	margin: 0;
+	padding: 0;
+}
+
+h2 {
+    font-size: 18px;
+	padding: 0px;
+	border: 1px solid red;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+/* a:active, a:hover, a:focus */
+a:hover {
+	text-decoration: underline;
+	color: inherit;
+	cursor: grab;
+}
+
+/* Cut all the "fluff" from tables so that they can be used for layout! */
+table {
+	border-collapse: collapse;
+	-webkit-border-horizontal-spacing: 0px;
+	-webkit-border-vertical-spacing: 0px;
+	border: 0px;
+	margin: 0px;
+}
+
+td {
+	border: 0px;
+	margin: 0px;
+}
+
+textarea {
+	resize: vertical;
+}
+
+textarea:focus {
+	outline: none;
+	border: 1px solid #009DDE;
+}
+
+button:focus, input[type=submit]:focus, input[type=button]:focus {
+	outline: 0;
+}
+
+/*
+This makes checkbox disappear!
+button, input {
+	-webkit-appearance: none !important;
+	-moz-appearance: none !important;
+	appearance: none !important;
+}
+*/
+
+/* --------------------------- */
+/* Custom Buttons: */
+
+.button-box {
+	background-color: black;
+	border: 1px solid black;
+	border-radius: 6px;
+	font-size: 14px;
+	text-align: center;
+	color: white;
+	margin: 0;
+}
+
+.button-box:disabled {
+	border: 1px solid grey;
+	background-color: lightgrey;
+}
+
+.button-box:active {
+	opacity: 0.3;
+    background-color: black;
+}
+
+.grey-disabled:disabled {
+	border: 1px solid black;
+	background-color: grey;
+}
+
+/* --------------------------- */
+/* Text fields: */
+
+.input-field-border {
+	border: 1px solid lightgrey;
+	background-color: white;
+}
+
+.input-field-border.has-focus {
+	border: 1px solid #009DDe;
+}
+
+.input-field {
+	border-radius: 0px;
+	height: 26px;
+	padding: 0px 4px;
+    font-size: 16px;
+	background-color: white;
+	border: 0px;
+	margin: 0px;
+}
+
+.input-field:focus {
+	outline: none;
+}
+
+.input-field-clear {
+	width: 28px;
+	min-width: 28px;
+    font-size: 20px;
+	text-align: center;
+	color: lightgrey;
+	background-color: white;
+	border: 0px;
+	padding: 0px;
+	font-family: Ariel;
+}
+
+.input-table input[type=text] {
+    width: 240px;
+}
+
+/* --------------------------- */
+/* Input Table: */
+
+.debug-table {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+.debug-table th {
+	border: 1px solid red;
+}
+
+.debug-table td {
+	border: 1px solid red;
+}
+
+/* --------------------------- */
+/* Input Table: */
+
+.input-table {
+	border-collapse: collapse;
+}
+
+.input-table th {
+	text-align: right;
+	font-weight: bold;
+}
+
+.input-table th {
+	padding: 4px 3px; 
+	white-space: nowrap;
+}
+
+.input-table td {
+	padding: 4px 0px; 
+	white-space: nowrap;
+}
+
+.input-table .button-row {
+	text-align:right;
+}
+
+.no-wrap-table td {
+	white-space: nowrap;
+}
+
+.input-table select, option {
+	height: 26px;
+    font-size: 16px;
+	padding: 0px 4px;
+}
+
+.input-table button, input[type=submit], input[type=button] {
+	height: 24px;
+    font-size: 14px;
+	border: 1px solid black;
+	color: white;
+	border-radius: 6px;  
+	-moz-border-radius: 6px; 
+	-webkit-border-radius: 6px;
+}
+
+.input-table button:disabled, input[type=submit]:disabled, input[type=button]:disabled {
+	background: darkgrey;
+}
+
+.input-table textarea {
+	border: 1px solid lightgrey;
+	padding: 2px 4px;
+    height: 48px;
+    font-size: 14px;
+    width: 494px;
+}
+
+.button-red {
+	background-color: red;	
+}
+
+.button-green {
+	background-color: green;	
+}
+
+.button-black {
+	background-color: black;
+}
+
+.button-blue {
+	background-color: blue;	
+}
+
+.button-lightgrey {
+	background-color: lightgrey;	
+}
+
+.button-yellow {
+	background-color: #FFD479;	
+	color: black;
+}
+
+button:active, input[type=submit]:active, input[type=button]:active {
+	background-color: #009DDE;
+}
+
+/* --------------------------- */
+/* Layout Items: */
+
+/* Include padding and border in the element's total width and height */
+.header {
+    background-color: white;
+    padding: 10px 15px;
+	height: 50px;
+    text-align: center;
+    vertical-align: top;
+    font-size: 40px;
+	line-height: 50px;
+    font-weight: normal;
+}
+
+.header img {
+    float: left;
+	height: 50px;
+	width: auto;
+}
+
+.header_name {
+    float: right;
+	font-size: 20px;
+}
+
+/* Style the top navigation bar */
+.topnav {
+    overflow: hidden;
+    background-color: #009DDE;
+    font-size: 18px;
+	width: 100%;
+}
+
+.topnav table {
+	border-collapse: collapse;
+	width: 100%;
+	border: 0;
+}
+
+.topnav td {
+    color: #f2f2f2;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.menu-item {
+	padding: 8px 16px;
+}
+
+.menu-item:hover {
+    color: black;
+    background-color: #C3E5F8;
+}
+
+.topnav td[selected] {
+    background-color: #f1f1f1;
+    color: black;
+    border: 1px solid black;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.row {
+    padding: 10px;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Clear floats after the columns */
+.footer {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	padding: 20px;
+    text-align: center;
+    background: #ddd;
+    margin-top: 20px;
+}
+
+.left-panel {
+	padding: 0px 10px;
+}
+
+/* --------------------------- */
+/* Message Boxes: */
+
+.message-box {
+	padding: 5px;
+	background-color: white;
+	/*border-radius: 6px;*/
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.error-box {
+	border: 1px solid red;
+	color: red;
+}
+
+.warning-box {
+	border: 1px solid orange;
+	color: orange;
+}
+
+.info-box {
+	border: 1px solid teal;
+	color: teal;
+}
+
+.success-box {
+	border: 1px solid green;
+	color: green;
+}
+
+/* --------------------------- */
+/* Details Table: */
+
+.details-table {
+	text-align: left;
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+.details-table th {
+	padding: 5px 5px; 
+	background-color: black;
+	color: white; 
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.details-table td {
+	padding: 4px 5px; 
+}
+
+.details-table tr:nth-child(even) {
+	background: #C3E5F8;
+}
+
+.details-table a {
+    color: black;
+    text-decoration: none;
+}
+
+.details-table a:hover {
+    text-decoration: underline;
+}
+
+.pagination-div {
+    margin: 4px 0px 4px 0px;
+}
+
+.pagination-div a {
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+	background-color: black;
+	padding: 2px 6px 2px 6px;
+	border: 1px solid black;
+	border-radius: 5px;
+}
+
+.pagination-div a:hover {
+	background-color: #009DDE;
+}
+
+.pagination-div a[selected] {
+	background-color: #009DDE;
+}
+
+/* --------------------------- */
+/* Scrollable Table: */
+
+table.scrollable-table thead {
+	display: block;
+}
+
+table.scrollable-table tbody {
+	display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* --------------------------- */
+/* Groups: */
+
+.group {
+	display: inline-block;
+	border: 1px solid black;
+	/*width: 100px;*/
+	/*height: 28px;*/
+	padding: 4px 4px 0px 4px;
+	color: white;
+}
+
+.group-s {
+	display: inline-block;
+	border: 1px solid black;
+	height: 22px;
+	min-width: 66px;
+	font-size: 16px;
+	padding: 2px 2px 0px 2px;
+	color: white;
+}
+
+.participant-group {
+	display: inline-block;
+	border: 1px solid black;
+	padding: 0px;
+	color: white;
+	font-size: 20px;
+	padding: 0px 2px;
+}
+
+.bg-white {
+	background-color: white;
+}
+
+.g-0 {
+	background-color: var(--g-0);
+}
+
+.g-1 {
+	background-color: var(--g-1);
+}
+
+.g-2 {
+	background-color: var(--g-2);
+}
+
+.g---0 {
+	background-color: var(--g--0);
+}
+
+.g---1 {
+	background-color: var(--g--1);
+}
+
+.g---2 {
+	background-color: var(--g--2);
+}
+
+.group-number-s {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+    border-radius: 9px;
+	text-align: center;
+	border: 1px solid black;
+	color: black;
+	font-size: 16px;
+}
+
+.group-number {
+	display: inline-block;
+	width: 22px;
+	height: 22px;
+    border-radius: 11px;
+	text-align: center;
+	border: 1px solid black;
+	color: black;
+	font-size: 20px;
+}
+
+.group-number-l {
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+    border-radius: 14px;
+	text-align: center;
+	border: 1px solid black;
+	color: black;
+	font-size: 24px;
+}
+
+.g-0 .group-number {
+	background-color: var(--g--0);
+}
+
+.g-1 .group-number {
+	background-color: var(--g--1);
+}
+
+.g-2 .group-number {
+	background-color: var(--g--2);
+}
+
+.g-0 .group-number-s {
+	background-color: var(--g--0);
+}
+
+.g-1 .group-number-s {
+	background-color: var(--g--1);
+}
+
+.g-2 .group-number-s {
+	background-color: var(--g--2);
+}
+
+.group-add {
+	display: inline-block;
+	border: 1px solid black;
+	width: 100px;
+	height: 28px;
+	padding: 4px 4px 0px 4px;
+	background-color: darkgrey;
+	color: black;
+	font-size: 20px;
+	text-align: center;
+}
+
+.g--0 {
+	background-color: var(--g-0);
+	opacity: 0.3;
+}
+
+.g--1 {
+	background-color: var(--g-1);
+	opacity: 0.3;
+}
+
+.g--2 {
+	background-color: var(--g-2);
+	opacity: 0.3;
+}
+
+/* --------------------------- */
+/* Group listings: */
+
+.group-header {
+	border-bottom: 1px solid #dddddd;
+	padding: 4px 0px;
+}
+
+/* --------------------------- */
+/* Staff schedule: */
+
+.schedule-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.schedule-table th {
+	text-align: center;
+}
+
+.schedule-table td {
+	white-space: nowrap;
+	border-top: 1px solid #dddddd;
+	text-align: center;
+	padding: 4px;
+}
+
+.schedule-table .row-header {
+	text-align: right;
+	white-space: nowrap;
+	width: 100px;
+	font-weight: bold;
+	padding: 4px 0px;
+}
+
+/* --------------------------- */
+/* Participants: */
+
+.participant-table td:nth-child(2) {
+	min-width: 120px;
+}
+
+.participant-table td:nth-child(4) {
+	padding: 2px 2px;
+}
+
+.participant-tabs {
+    background-color: #C3E5F8;
+    color: black;
+    text-align: center;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: 1px solid black;
+    margin-bottom: 4px;
+}
+
+.participant-tabs.active {
+    background-color: #009DDE;
+    color: white;
+}
+
+.participant-tabs:hover, .participant-tabs:active {
+    background-color: #009DDE;
+    color: white;
+}
+
+.white-box {
+	display: inline-block;
+	background-color: white;
+	border: 1px solid darkgrey;
+	height: 24px;
+	width: 100px;
+	line-height: 24px;
+	text-align: center;
+	color: black;
+}
+
+.grey-box {
+	display: inline-block;
+	background-color: lightgrey;
+	border: 1px solid grey;
+	height: 24px;
+	width: 120px;
+	line-height: 24px;
+	text-align: center;
+	color: black;
+}
+
+.green-box {
+	display: inline-block;
+	background-color: #ADFFA1;
+	border: 1px solid darkgreen;
+	height: 24px;
+	width: 120px;
+	line-height: 24px;
+	text-align: center;
+	color: black;
+}
+
+.yellow-box {
+	display: inline-block;
+	background-color: #FFD479;
+	border: 1px solid orange;
+	height: 24px;
+	width: 120px;
+	line-height: 24px;
+	text-align: center;
+	color: black;
+}
+
+.red-box {
+	display: inline-block;
+	background-color: #FFB7BC;
+	border: 1px solid darkred;
+	height: 24px;
+	width: 120px;
+	line-height: 24px;
+	text-align: center;
+	color: black;
+}
+
+.blue-box {
+	display: inline-block;
+	background-color: #9AC5FF;
+	border: 1px solid blue;
+	height: 24px;
+	width: 120px;
+	line-height: 24px;
+	text-align: center;
+	color: black;
+}
+
+.in-col {
+	min-width: 60px;
+	white-space: nowrap;
+	width: auto;
+	padding: 0px 3px;
+}
+
+#update_kid tr th:first-child {
+	width: 112px;
+}
+
+/* Undo the above for the embedded group */
+#register_group_list tr th:first-child {
+	width: auto;
+}
+
+#modify_group_list tr th:first-child {
+	width: auto;
+}
+
+.button-white.wc {
+	background-color: white;
+	width: 60px;
+	height: 40px;
+	font-size: 20px;
+	color: black;
+}
+
+.button-red.register {
+	background-color: red;
+	width: 200px;
+	height: 40px;
+	font-size: 20px;
+}
+
+.button-green.register {
+	background-color: green;	
+	width: 200px;
+	height: 40px;
+	font-size: 20px;
+}
+
+.button-yellow.register {
+	background-color: #FFD479;	
+	color: black;
+	width: 200px;
+	height: 40px;
+	font-size: 20px;
+}
+
+.strike-thru {
+	text-decoration: line-through;
+}
+
+.history-table {
+	margin-right: 5px;
+	min-width: 640px;
+}
+
+.history-table td:nth-child(1) {
+	white-space: nowrap;
+}
+
+.history-table td:nth-child(2) {
+	white-space: nowrap;
+}
+
+.history-table th:nth-child(3) {
+	white-space: nowrap;
+	text-align: center;
+}
+
+.history-table td:nth-child(3) {
+	white-space: nowrap;
+	text-align: center;
+}
+
+.history-table th:last-child {
+	min-width: 180px;
+    width: 100%;
+}
+
+.history-table td:last-child {
+	min-width: 180px;
+    width: 100%;
+}
+
+.member-table {
+	margin-right: 5px;
+	min-width: 640px;
+}
+
+.output-table td {
+	padding: 3px 0px 3px 2px; 
+}
+
+.output-table th {
+	text-align: right;
+	vertical-align: top;
+	padding: 3px 0px; 
+}
+
+.printable-table {
+	text-align: left;
+	border: 1px solid black;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.printable-table th {
+	padding: 5px 5px; 
+	text-align: left;
+	background-color: white;
+	color: black; 
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.printable-table td {
+	padding: 5px; 
+}
+
+.printable-table tr:nth-child(odd) {
+	background-color: #EBEBEB;
+}
+
+.ipad-table {
+    font-size: 18px;
+	margin: 3px;
+	border-collapse: separate;
+	border-spacing: 5px;
+}
+
+.ipad-table input {
+    font-size: 18px;
+    height: 32px;
+}
+
+.ipad-table textarea {
+    font-size: 18px;
+    height: 42px;
+}
+
+/* --------------------------- */
+/* Checkbox: */
+
+.img-checkbox {
+	display: none;
+}
+
+.img-checkbox:checked + label img {
+	content: url('../img/tick.png');
+}
+
