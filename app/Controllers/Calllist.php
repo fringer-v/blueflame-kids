@@ -58,7 +58,7 @@ class CallListTable extends Table {
 	}
 }
 
-class CallList extends BF_Controller {
+class Calllist extends BF_Controller {
 	public function initController(
 		RequestInterface $request,
 		ResponseInterface $response,

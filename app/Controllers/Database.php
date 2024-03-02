@@ -11,7 +11,7 @@ class Database extends BF_Controller {
 		ResponseInterface $response,
 		LoggerInterface $logger)
 	{
-		parent::initController($request, $response, $logger, false);
+		parent::initController($request, $response, $logger);
 		//$this->start_session();
 	}
 

@@ -26,7 +26,7 @@ class BF_Controller extends BaseController {
 	{
 		parent::initController($request, $response, $logger);
 		$this->db = db_connect();
-		$this->db_model = model('db_model');
+		$this->db_model = model('Db_model');
 	}
 	
 	public function start_session()

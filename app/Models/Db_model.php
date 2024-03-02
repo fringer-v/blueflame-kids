@@ -17,7 +17,7 @@ use CodeIgniter\Model;
 // 47 - kid_registered DEFAULT set to 0 (REG_NO)
 define("DB_VERSION", 48);
 
-class DB_model extends Model {
+class Db_model extends Model {
 	private $settings = array();
 
 	private $forge;
