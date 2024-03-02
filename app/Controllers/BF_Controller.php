@@ -16,8 +16,8 @@ class BF_Controller extends BaseController {
 	public $error = "";
 	public $warning = "";
 
-	protected $db;
-	protected $session;
+	protected $db = null;
+	protected $session = null;
 
 	public function initController(
 		RequestInterface $request,
@@ -26,6 +26,11 @@ class BF_Controller extends BaseController {
 	{
 		parent::initController($request, $response, $logger);
 		$this->db = db_connect();
+		$this->db_model = model('db_model');
+	}
+	
+	public function start_session()
+	{
 		$this->session = session();
 		//$this->db->query("SET time_zone = '+02:00'");
 	}
@@ -551,7 +556,8 @@ class BF_Controller extends BaseController {
 	public function header($title, $menu = true) {
 		$this->head($title);
 		$attr = [ ];
-		if ($this->session->ses_curr_page == 'hello' || $this->session->ses_curr_page == 'checkin')
+		if ($this->session != null &&
+			($this->session->ses_curr_page == 'hello' || $this->session->ses_curr_page == 'checkin'))
 			$attr = [ 'style'=>'background-image: url("../img/bf-windrad-2.png"); background-repeat: no-repeat; '.
 				'background-position: top center; background-color: #ECECEC;' ];
 		tag('body', $attr);
@@ -658,7 +664,8 @@ class BF_Controller extends BaseController {
 	}
 
 	public function set_success($message) {
-		$this->session->set('bf_success', $message);
+		if ($this->session != null)
+			$this->session->set('bf_success', $message);
 	}
 
 	// ---------------------------

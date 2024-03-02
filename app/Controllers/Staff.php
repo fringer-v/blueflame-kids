@@ -36,7 +36,7 @@ class StaffTable extends Table {
 
 		switch ($field) {
 			case 'stf_username':
-				return $row[$field];
+				return $row[$field].' ('.$row['stf_fullname'].')';
 			case 'stf_role':
 				$val = '';
 				$present = '';
@@ -67,6 +67,8 @@ class StaffTable extends Table {
 					if ($row['stf_reserved_count'] > 1)
 						$val .= ' ('.$row['stf_reserved_count'].')';
 				}
+				if (empty($val))
+					$val = $all_roles[$row['stf_role']];
 				return $val;
 			case 'is_present':
 				if ($row['all_periods']) {
@@ -105,7 +107,7 @@ class Staff extends BF_Controller {
 		LoggerInterface $logger)
 	{
 		parent::initController($request, $response, $logger);
-		$this->db_model = model('db_model');
+		$this->start_session();
 	}
 
 	private function period_val($periods, $p, $val_name)
@@ -350,7 +352,7 @@ class Staff extends BF_Controller {
 					$data['stf_password'] = $pwd;
 					$builder = $this->db->table('bf_staff');
 					$builder->insert($data);
-					$stf_id_v = $this->db->insertID;
+					$stf_id_v = $this->db->insertID();
 					$stf_id->setValue($stf_id_v);
 					$this->set_success($stf_fullname->getValue().' hinzugefügt');
 				}
@@ -365,7 +367,7 @@ class Staff extends BF_Controller {
 					$this->set_success($stf_fullname->getValue().' geändert');
 				}
 
-				for ($p=$current_period; $p<PERIOD_COUNT; $p++) {
+				for ($p=0; $p<PERIOD_COUNT; $p++) {
 					$p_p = $present[$p]->getValue();
 					$l_p = $leader[$p]->getValue();
 					$my_l = 0;

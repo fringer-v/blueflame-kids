@@ -15,7 +15,7 @@ class Admin extends BF_Controller {
 		LoggerInterface $logger)
 	{
 		parent::initController($request, $response, $logger);
-		$this->db_model = model('db_model');
+		$this->start_session();
 	}
 
 	private function import_staff($first_name, $last_name, $availability, $work_time, $activity)
@@ -114,7 +114,7 @@ class Admin extends BF_Controller {
 				'stf_notes' => $stf_notes ];
 			$builder = $this->db->table('bf_staff');
 			$builder->insert($data);
-			$stf_id = $this->db->insertID;
+			$stf_id = $this->db->insertID();
 		}
 		else {
 			$data = [

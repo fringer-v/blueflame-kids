@@ -80,14 +80,7 @@ class DB_model extends Model {
 		return $this->get_setting("database-version") == DB_VERSION;
 	}
 
-	public function update_database() {		
-		$fields = array(
-			'stn_name VARCHAR(40) NOT NULL PRIMARY KEY',
-			'stn_type'=>array('type'=>'VARCHAR', 'constraint'=>'10'),
-			'stn_value'=>array('type'=>'VARCHAR', 'constraint'=>'400')
-		);
-		$this->create_or_update_table('bf_setting', $fields);
-
+	public function update_database() {
 		$fields = array(
 			'id'=>array('type'=>'VARCHAR', 'constraint'=>'128'),
 			'ip_address'=>array('type'=>'VARCHAR', 'constraint'=>'45'),
@@ -95,6 +88,13 @@ class DB_model extends Model {
 			'data'=>array('type'=>'BLOB')
 		);
 		$this->create_or_update_table('bf_sessions', $fields, array('timestamp'));
+
+		$fields = array(
+			'stn_name VARCHAR(40) NOT NULL PRIMARY KEY',
+			'stn_type'=>array('type'=>'VARCHAR', 'constraint'=>'10'),
+			'stn_value'=>array('type'=>'VARCHAR', 'constraint'=>'400')
+		);
+		$this->create_or_update_table('bf_setting', $fields);
 
 		$fields = array(
 			'stf_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
@@ -208,8 +208,20 @@ class DB_model extends Model {
 		);
 		$this->create_or_update_table('bf_locations', $fields);
 
-		// Login sa, sa:		
-		$this->add_staff('sa', 'System Admin', '$2y$10$n893Y7wWOninuuehlSb8w.VkiPxMOdccY84h29N.2B5TpwArn7yI6',1,0);
+		// Login sa, pwd: sasa:		
+		$this->add_staff('sa', 'System Admin', '$2y$10$csj8Jqmp0vV6RWQzpHdWZ.j5mzA.f79wUixba6IGWPIr/vGC3FXLe',1,0);
+		/*
+		drop table bf_groups;
+		drop table bf_history;
+		drop table bf_kids;
+		drop table bf_locations;
+		drop table bf_parents;
+		drop table bf_period;
+		drop table bf_register_kids;
+		drop table bf_sessions;
+		drop table bf_setting;
+		drop table bf_staff;
+
 		$this->add_staff('Admin', 'Administrator', '$2y$10$orVZz8QD6iuSqg7G//Rvm.OFWFxFEQ1fSFFuc8H2Kn5bJYqRZ7FZW',1,0);
 		$this->add_staff('Paul','Paul McCullagh','$2y$10$libvYITOuwrLptOCTOJ3quuFWfnzmTDIHLi.V4BlBwGzAnseJbrW.',1,0);
 		$this->add_staff('Andrea','Andrea McCullagh','$2y$10$/WwXV9sFN5mf.VDe9YlwB.UCtUYznnyR8cnUsqXzq4X/SzhChuIR6',1,0);
@@ -294,6 +306,7 @@ class DB_model extends Model {
 		$this->add_staff('Johanna M','Johanna M');
 		$this->add_staff('Insa Schulze','Insa Schulze');
 		$this->add_staff('Patte G','Patte G');
+		*/
 
 		$this->add_location('Buurndeel');
 		$this->add_location('Thronsaal');

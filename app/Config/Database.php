@@ -29,7 +29,7 @@ class Database extends Config
         'hostname'     => 'localhost',
         'username'     => 'blueflame',
         'password'     => 'blueflame',
-        'database'     => 'blueflame',
+        'database'     => 'blueflame_test',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
         'pConnect'     => false,

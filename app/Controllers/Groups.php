@@ -46,7 +46,7 @@ class Groups extends BF_Controller {
 		LoggerInterface $logger)
 	{
 		parent::initController($request, $response, $logger);
-		$this->db_model = model('db_model');
+		$this->start_session();
 	}
 
 	public function index()

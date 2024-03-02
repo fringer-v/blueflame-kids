@@ -12,6 +12,7 @@ class Login extends BF_Controller {
 		LoggerInterface $logger)
 	{
 		parent::initController($request, $response, $logger);
+		$this->start_session();
 	}
 
 	public function index()
