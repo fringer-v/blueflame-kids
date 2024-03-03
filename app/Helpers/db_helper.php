@@ -50,6 +50,17 @@ function db_row_array($sql, $sqlargs = array()) {
 	return $result;
 }
 
+function db_1_row($sql, $sqlargs = array()) {
+	$db = db_connect();
+
+	$query = $db->query($sql, $sqlargs);
+	$result = array();
+	while ($row = $query->getUnbufferedRow('array')) {
+		return $row;
+	}
+	return $result;
+}
+
 function db_insert($table, $data, $modify_time = '') {
 	$db = db_connect();
 

@@ -528,29 +528,38 @@ class InputField extends BaseOutput {
 				if (strlen($value) > $arg)
 					$error = $this->getLabel(true)." darf nicht länger als $arg Zeichen sein";
 			}
-			else if (empty($form)) {
-				$error = 'Rule: "'.$rule.'" requires this field be attached to a form';
-			}
-			else {
-				if (str_startswith($rule, 'is_unique')) {
-					$db = db_connect();
+			if (str_startswith($rule, 'is_unique')) {
+				$db = db_connect();
 
-					$arg = str_left(str_right($rule, '['), ']');
-					$dots = explode('.', $arg);
-					$table = $dots[0];
-					$column = $dots[1];
-					$id = '';
-					if (isset($dots[2]))
-						$id = $dots[2];
+				$arg = str_left(str_right($rule, '['), ']');
+				$dots = explode('.', $arg);
+				$table = $dots[0];
+				$column = $dots[1];
+				$id = '';
+				if (isset($dots[2]))
+					$id = $dots[2];
+				if (!empty($id) && empty($form)) {
+					$error = 'Rule: "'.$rule.'" requires a form to be specified';
+				}
+				else {
 					$sql = 'SELECT COUNT(*) AS count FROM '.$table.' WHERE '.$column.' = ?';
-					if (!empty($id))
+					$values = [ $value ];
+					if (!empty($id)) {
+						// This is the unique check on an existing record!
 						$sql .= ' AND '.$id.' != ?';
-					$query = $db->query($sql, [ $value, $form->getField($id)->getValue() ]);
+						$values[] = $form->getField($id)->getValue();
+					}
+					$query = $db->query($sql, $values);
 					$row = $query->getRowArray()['count'];
 					if ($row != 0)
-						$error = $this->getLabel(true).' muss eindeutig sein';
+						$error = $this->getLabel(true).' ist bereits in Verwendung';
 				}
-				else if (str_startswith($rule, 'matches')) {
+			}
+			else if (str_startswith($rule, 'matches')) {
+				if (empty($form)) {
+					$error = 'Rule: "'.$rule.'" requires a form to be specified';
+				}
+				else {
 					$arg = str_left(str_right($rule, '['), ']');
 					if ($value != $form->getField($arg)->getValue())
 						$error = $this->getLabel(true).' ist nicht gleich '.$form->getLabel($arg, true);
