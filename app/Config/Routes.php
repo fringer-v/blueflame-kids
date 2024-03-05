@@ -25,8 +25,8 @@ $routes->get('groups/prints', 'Groups::prints');
 $routes->post('groups/prints', 'Groups::prints');
 $routes->post('groups/pollgroupdata', 'Groups::pollgroupdata');
 
-$routes->get('login', 'Login::index');
-$routes->post('login', 'Login::index');
+$routes->get('admin-login', 'Login::index');
+$routes->post('admin-login', 'Login::index');
 
 $routes->get('participant', 'Participant::index');
 $routes->post('participant', 'Participant::index');
@@ -40,15 +40,15 @@ $routes->post('participant/gethistory', 'Participant::gethistory');
 $routes->get('participant/pollgroups', 'Participant::pollgroups');
 $routes->post('participant/pollgroups', 'Participant::pollgroups');
 
-$routes->get('registration', 'Registration::index');
-$routes->post('registration', 'Registration::index');
-$routes->get('registration/iframe', 'Registration::iframe');
-$routes->post('registration/iframe', 'Registration::iframe');
+$routes->get('ipad', 'Registration::index');
+$routes->post('ipad', 'Registration::index');
+$routes->get('ipad/iframe', 'Registration::iframe');
+$routes->post('ipad/iframe', 'Registration::iframe');
 
-$routes->get('checkin', 'Checkin::index');
-$routes->post('checkin', 'Checkin::index');
-$routes->get('hello', 'Checkin::hello');
-$routes->post('hello', 'Checkin::hello');
+$routes->get('registration', 'Checkin::registration');
+$routes->post('registration', 'Checkin::registration');
+$routes->get('login', 'Checkin::login');
+$routes->post('login', 'Checkin::login');
 
 $routes->get('staff', 'Staff::index');
 $routes->post('staff', 'Staff::index');

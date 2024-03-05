@@ -17,11 +17,11 @@ class Login extends BF_Controller {
 
 	public function index()
 	{
-		$login_form = new Form('user_login', url('login'), 1, array('class'=>'input-table'));
+		$login_form = new Form('user_login', url('admin-login'), 1, array('class'=>'input-table'));
 		$stf_username = $login_form->addTextInput('stf_username', 'Username');
 		$stf_password = $login_form->addPassword('stf_password', 'Password');
 		$stf_md5_pwd = $login_form->addHidden('stf_md5_pwd', 'Password');
-		$login = $login_form->addSubmit('login', 'Login', array('class'=>'button-black'/*, 'onclick'=>'doLogin();'*/));
+		$login = $login_form->addSubmit('admin-login', 'Login', array('class'=>'button-black'/*, 'onclick'=>'doLogin();'*/));
 
 		$stf_username->setRule('required');
 		$stf_md5_pwd->setRule('required');
@@ -51,7 +51,7 @@ class Login extends BF_Controller {
 					strtolower($staff_row['stf_username']) != 'jessica' &&
 					strtolower($staff_row['stf_username']) != 'paul' &&
 					strtolower($staff_row['stf_username']) != 'admin' &&
-					strtolower($staff_row['stf_username']) != 'registration') {
+					strtolower($staff_row['stf_username']) != 'ipad') {
 					$this->error = "Zugangsberechtigung verweigert: ".$stf_username->getValue();
 				}
 				else {

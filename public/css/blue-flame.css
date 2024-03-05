@@ -74,6 +74,21 @@ button, input {
 */
 
 /* --------------------------- */
+/* Screen scaling according to size: */
+
+.registration-table {
+   	width: 572px;
+   	zoom: 160%;
+}
+
+.registration-body {
+  	background-image: url("../img/bf-windrad-2.png");
+  	background-position: center;
+   	background-repeat: no-repeat;
+   	min-height: 1280px;
+ }
+
+/* --------------------------- */
 /* Custom Buttons: */
 
 .button-box {

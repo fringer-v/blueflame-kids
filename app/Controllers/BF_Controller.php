@@ -524,7 +524,7 @@ class BF_Controller extends BaseController {
 
 		$this->header('Redirect');
 		script();
-		out('window.parent.location = "login";');
+		out('window.parent.location = "admin-login";');
 		_script();
 		$this->footer();
 
@@ -555,16 +555,18 @@ class BF_Controller extends BaseController {
 
 	public function header($title, $menu = true) {
 		$this->head($title);
-		$attr = [ ];
+		$body_attr = [ ];
+		$table_attr = [ 'style'=>'width: 100%; border-collapse: collapse; border: 0px;' ];
 		if ($this->session != null &&
-			($this->session->ses_curr_page == 'hello' || $this->session->ses_curr_page == 'checkin'))
-			$attr = [ 'style'=>'background-image: url("../img/bf-windrad-2.png"); background-repeat: no-repeat; '.
-				'background-position: top center; background-color: #ECECEC;' ];
-		tag('body', $attr);
+			($this->session->ses_curr_page == 'login' || $this->session->ses_curr_page == 'registration')) {
+			$body_attr = [ 'style'=>'background-color: #D9E3E8;' ]; // A9C2D6 ECECEC
+			$table_attr['class'] = 'registration-body';
+		}
+		tag('body', $body_attr);
 
-		table([ 'style'=>'width: 100%; border-collapse: collapse; border: 0px;' ]);
+		table($table_attr);
 		tr();
-		td([ 'style'=>'padding: 0px;' ]);
+		td([ 'style'=>'padding: 0px; text-align: center; vertical-align: top;' ]);
 
 		if ($menu) {
 			if ($title == 'Database update') {
@@ -601,10 +603,10 @@ class BF_Controller extends BaseController {
 			td(array('style'=>'width: 3px; padding: 0;'), nbsp());
 			td($this->link('groups', $title == 'Kleingruppen'), 'Kleingruppen');
 
+			//td(array('style'=>'width: 3px; padding: 0;'), nbsp());
+			//td($this->link('ipad', $title == 'iPad Registrierung'), 'iPad Registrierung');
 			td(array('style'=>'width: 3px; padding: 0;'), nbsp());
-			td($this->link('registration', $title == 'iPad Registrierung'), 'iPad Registrierung');
-			td(array('style'=>'width: 3px; padding: 0;'), nbsp());
-			td($this->link('checkin', $title == 'Mobile Checkin'), 'Mobile Checkin');
+			td($this->link('registration', $title == 'Mobile Checkin'), 'Mobile Checkin');
 
 			hidden('login_full_name', $this->stf_login_name);
 			if ($title != 'Login') {

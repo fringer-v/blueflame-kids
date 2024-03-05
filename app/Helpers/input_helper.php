@@ -528,7 +528,15 @@ class InputField extends BaseOutput {
 				if (strlen($value) > $arg)
 					$error = $this->getLabel(true)." darf nicht länger als $arg Zeichen sein";
 			}
-			if (str_startswith($rule, 'is_unique')) {
+			else if (str_startswith($rule, 'is_email')) {
+				if (!filter_var($value, FILTER_VALIDATE_EMAIL))
+					$error = '"'.$value.'" ist keine gültige E-Mail Adresse';
+			}
+			else if (str_startswith($rule, 'is_phone')) {
+				if (!preg_match('/^[\+]?[0-9\s]*$/', $value))
+					$error = '"'.$value.'" ist keine gültige Rufnummer';
+			}
+			else if (str_startswith($rule, 'is_unique')) {
 				$db = db_connect();
 
 				$arg = str_left(str_right($rule, '['), ']');

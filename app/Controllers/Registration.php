@@ -32,22 +32,22 @@ class Registration extends BF_Controller {
 	{
 		$this->header('iPad Registrierung', false);
 
-		$reg_top_form = new Form('reg_top_form', 'registration', 2, array('class'=>'input-table'));
+		$reg_top_form = new Form('reg_top_form', 'ipad', 2, array('class'=>'input-table'));
 		$reg_back = $reg_top_form->addHidden('reg_back');
 		if (!empty($reg_back->getValue())) {
 			if ($this->prompted_login($reg_back->getValue())) {
 				if (empty($this->session->ses_prev_page) ||
-					$this->session->ses_prev_page == "registration" ||
-					$this->session->ses_prev_page == "checkin")
+					$this->session->ses_prev_page == 'ipad' ||
+					$this->session->ses_prev_page == 'checkin')
 					return redirect("participant");
 				return redirect($this->session->ses_prev_page);
 			}
-			return redirect("registration");
+			return redirect('ipad');
 		}
 		$reg_login = $reg_top_form->addHidden('reg_login');
 		if (!empty($reg_login->getValue())) {
 			$this->prompted_login($reg_login->getValue());
-			return redirect('registration');
+			return redirect('ipad');
 		}
 
 		$reg_part = in('reg_part', 1);
@@ -81,7 +81,7 @@ class Registration extends BF_Controller {
 		_table();
 		$reg_top_form->close();
 
-		tag('iframe', [ 'id'=>'content-iframe', 'src'=>'registration/iframe', 'style'=>'width: 100%; height: 400px; border: 0;' ], '');
+		tag('iframe', [ 'id'=>'content-iframe', 'src'=>'ipad/iframe', 'style'=>'width: 100%; height: 400px; border: 0;' ], '');
 
 		script();
 		out('
@@ -107,7 +107,7 @@ class Registration extends BF_Controller {
 				var content = $("#content-iframe").contents();
 				var form = content.find("#reg_iframe_form");
 				if (form == null || form.length == 0)
-					$("#content-iframe").attr("src", "registration/iframe");
+					$("#content-iframe").attr("src", "ipad/iframe");
 				else
 					form.submit();
 			}
@@ -289,7 +289,7 @@ class Registration extends BF_Controller {
 			$reg_part->setValue(1);
 			$reg_kids->setValue([ ]);
 			$reg_supervision->setValue([ ]);
-			return redirect("registration/iframe");
+			return redirect("ipad/iframe");
 		}
 
 		$reg_set_part_v = $reg_set_part->getValue();
@@ -302,7 +302,7 @@ class Registration extends BF_Controller {
 			// May leave a partially empty tab:
 			$reg_part->setValue($reg_set_part_v);
 			$this->set_default_lastname($reg_kids, $reg_kids_v, $reg_set_part_v, $kid_empty_row);
-			return redirect("registration/iframe");
+			return redirect("ipad/iframe");
 		}
 
 		$kid_fullname = textinput('kid_fullname', $edit_part['kid_fullname'],
@@ -384,7 +384,7 @@ class Registration extends BF_Controller {
 								$this->set_default_lastname($reg_kids, $reg_kids_v,
 									$reg_set_part_v, $kid_empty_row);
 							}
-							return redirect("registration/iframe");
+							return redirect("ipad/iframe");
 						}
 						else {
 							$reg_kids_v[$reg_part_v]['kid_id'] = 0;
@@ -397,7 +397,7 @@ class Registration extends BF_Controller {
 							$reg_part->setValue($reg_set_part_v);
 							$this->set_default_lastname($reg_kids, $reg_kids_v,
 							$reg_set_part_v, $kid_empty_row);
-							return redirect("registration/iframe");
+							return redirect("ipad/iframe");
 						}
 						if ($db_part['kid_registered'] == REG_NO && empty($db_part['kid_group_number'])) {
 							$this->modify_kid($db_part['kid_id'], $db_part, $edit_part, false,
@@ -411,7 +411,7 @@ class Registration extends BF_Controller {
 								$this->set_default_lastname($reg_kids, $reg_kids_v,
 									$reg_set_part_v, $kid_empty_row);
 							}
-							return redirect("registration/iframe");
+							return redirect("ipad/iframe");
 						}
 						else {
 							$reg_kids_v[$reg_part_v]['kid_id'] = 0;

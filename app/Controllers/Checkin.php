@@ -17,22 +17,22 @@ class Checkin extends BF_Controller {
 		$this->start_session();
 	}
 
-	public function index()
+	public function registration()
 	{
 		if (!$this->is_logged_in('parent'))
-			return redirect('hello');
+			return redirect('login');
 
 		$current_period = $this->db_model->get_setting('current-period');
 		$parent_row = $this->get_parent_row($this->par_login_id);
 
-		$ci_top_form = new Form('ci_top_form', 'checkin', 2, array('class'=>'input-table'));
+		$ci_top_form = new Form('ci_top_form', 'registration', 2, array('class'=>'input-table'));
 		$go_back = imagebutton('go_back', '../img/bf-kids-logo3.png', ['style'=>'height: 34px; width: auto;']);
 		$go_back->autoEchoOff();
 
 		$par_left_col_size = 347;
 		$par_right_col_size = 187;
 
-		$ci_parent_form = new Form('ci_parent_form', 'checkin');
+		$ci_parent_form = new Form('ci_parent_form', 'registration');
 		$ci_parent_form->addHidden('par_id', $parent_row['par_id']);
 		$par_fullname = textinput('par_fullname', $parent_row['par_fullname'],
 			['placeholder'=>'Name', 'style'=>'width: '.($par_left_col_size - 40).'px;',
@@ -43,7 +43,7 @@ class Checkin extends BF_Controller {
 		$par_cellphone = new NumericField('par_cellphone', $parent_row['par_cellphone'],
 			['style'=>'font-family: Monospace; width: '.($par_right_col_size - 38).'px;',
 				'onkeyup'=>'toggle_submit_parent();', 'before'=>$parent_row['par_cellphone']]);
-		$par_cellphone->setRule('required|is_unique[bf_parents.par_cellphone.par_id]', 'Handy-Nr');
+		$par_cellphone->setRule('required|is_phone|is_unique[bf_parents.par_cellphone.par_id]', 'Handy-Nr');
 		$par_cellphone->setFormat(['clear-box'=>true]);
 
 		$update_parent = button('update_parent', 'Sichern', ['class'=>'button-box button-green', 'style'=>'width: 154px; height: 34px; font-size: 18px; border-radius: 0;']);
@@ -77,8 +77,8 @@ class Checkin extends BF_Controller {
 
 		if ($go_back->submitted()) {
 			if (empty($this->session->ses_prev_page) ||
-				$this->session->ses_prev_page == 'registration' ||
-				$this->session->ses_prev_page == 'checkin')
+				$this->session->ses_prev_page == 'ipad' ||
+				$this->session->ses_prev_page == 'registration')
 				return redirect('participant');
 			return redirect($this->session->ses_prev_page);
 		}
@@ -96,13 +96,13 @@ class Checkin extends BF_Controller {
 				$builder->where('par_id', $this->par_login_id);
 				$builder->update($data);
 				$this->set_success($par_fullname->getValue().' geändert');
-				return redirect('checkin');
+				return redirect('registration');
 			}
 		}
 
 		if ($logout_parent->submitted()) {
 			$this->set_parent_logged_out();
-			return redirect('checkin');
+			return redirect('registration');
 		}
 
 		if ($submit_kid->submitted()) {
@@ -149,7 +149,7 @@ class Checkin extends BF_Controller {
 						0, $err_prefix, $kid_id_v));
 					if (!$this->have_error()) {
 						$this->set_success($err_prefix.$kid_fullname->getValue().' angemeldet');
-						return redirect('checkin');
+						return redirect('registration');
 					}
 				}
 				else {
@@ -158,7 +158,7 @@ class Checkin extends BF_Controller {
 					$this->set_error($this->modify_kid($kid_id_v, $kid_row, $after_row, false, [ ], 0, $err_prefix));
 					if (!$this->have_error()) {
 						$this->set_success($err_prefix.$kid_fullname->getValue().' geändert');
-						return redirect('checkin');
+						return redirect('registration');
 					}
 				}
 			}
@@ -168,15 +168,15 @@ class Checkin extends BF_Controller {
 			$err_prefix = 'Kind '.$kid_nr_v.': ';
 			$this->remove_kid($kid_id_v);
 			$this->set_success($err_prefix.$kid_fullname->getValue().' abgemeldet');
-			return redirect('checkin');
+			return redirect('registration');
 		}
 
-		$this->header('Checkin', false);
+		$this->header('Anmeldung', false);
 
-		table(['class'=>'ipad-table', 'style'=>'padding-top: 2px; margin-left: auto; margin-right: auto;']);
+		table(['class'=>'ipad-table registration-table', 'style'=>'padding-top: 2px; margin-left: auto; margin-right: auto;']);
 		$ci_top_form->open();
 		tr();
-		td(['style'=>'background-color: black; color: white; text-align: center; padding: 8px 0px 4px 0px;']);
+		td(['style'=>'background-color: black; color: white; text-align: center; font-size: 20px; padding: 8px 0px 4px 0px;']);
 		out($go_back);
 		br();
 		out('Anmeldung');
@@ -290,30 +290,30 @@ class Checkin extends BF_Controller {
 		return '';
 	}
 
-	public function hello()
+	public function login()
 	{
 		$this->is_logged_in('parent');
 
 		$current_period = $this->db_model->get_setting('current-period');
 
-		$ci_top_form = new Form('ci_top_form', 'checkin');
+		$ci_top_form = new Form('ci_top_form', 'registration');
 		$go_back = imagebutton('go_back', '../img/bf-kids-logo3.png', ['style'=>'height: 34px; width: auto;']);
 		$go_back->autoEchoOff();
 
 		$par_left_col_size = 347;
 		$par_right_col_size = 187;
 
-		$login_form = new Form('user_login', url('hello'));
+		$login_form = new Form('user_login', url('login'));
 		$par_login_email = textinput('par_login_email', '',
-			['placeholder'=>'E-Mail', 'style'=>'width: '.($par_left_col_size - 40).'px;', 'onkeyup'=>'toggle_login();']);
+			['placeholder'=>'E-Mail',  'inputmode'=>'email', 'style'=>'width: '.($par_left_col_size - 40).'px;', 'onkeypress'=>'login_press(event);', 'onkeyup'=>'login_keyup(event);']);
 		$par_login_email->setAttribute('before', $par_login_email->getValue());
-		$par_login_email->setRule('required');
+		$par_login_email->setRule('required|is_email');
 		$par_login_email->autoEchoOff();
 		$par_login_email->setFormat(['clear-box'=>true]);
 		$par_login_email->persistent();
 
 		$par_code = textinput('par_code', '',
-			['placeholder'=>'Kids-ID', 'style'=>'width: '.($par_right_col_size - 40).'px;', 'onkeyup'=>'toggle_login();']);
+			['placeholder'=>'Kids-ID', 'style'=>'width: '.($par_right_col_size - 40).'px;', 'onkeypress'=>'login_press(event);', 'onkeyup'=>'login_keyup(event);']);
 		$par_code->setAttribute('before', $par_code->getValue());
 		$par_code->setRule('required');
 		$par_code->setFormat(['clear-box'=>true]);
@@ -329,20 +329,20 @@ class Checkin extends BF_Controller {
 			$send_kids_id->disable();
 		$send_kids_id->autoEchoOff();
 
-		$register_form = new Form('register_form', url('hello'));
+		$register_form = new Form('register_form', url('login'));
 		$par_fullname = textinput('par_fullname', '',
-			['placeholder'=>'Vorname und Nachname', 'style'=>'width: '.($par_left_col_size - 40).'px;', 'onkeyup'=>'toggle_registration();']);
+			['placeholder'=>'Vorname und Nachname', 'style'=>'width: '.($par_left_col_size - 40).'px;', 'onkeypress'=>'registration_press(event);', 'onkeyup'=>'registration_keyup(event);']);
 		$par_fullname->setRule('required|is_unique[bf_parents.par_fullname]', 'Begleitperson Name');
 		$par_fullname->setFormat(['clear-box'=>true]);
 
 		$par_cellphone = textinput('par_cellphone', '',
-			['placeholder'=>'Handy-Nr', 'style'=>'width: '.($par_right_col_size - 40).'px;', 'onkeyup'=>'toggle_registration();']);
-		$par_cellphone->setRule('required|is_unique[bf_parents.par_cellphone]', 'Begleitperson Handy-Nr');
+			['placeholder'=>'Handy-Nr', 'inputmode'=>'tel', 'style'=>'width: '.($par_right_col_size - 40).'px;', 'onkeypress'=>'registration_press(event);', 'onkeyup'=>'registration_keyup(event);']);
+		$par_cellphone->setRule('required|is_phone|is_unique[bf_parents.par_cellphone]', 'Begleitperson Handy-Nr');
 		$par_cellphone->setFormat(['clear-box'=>true]);
 
 		$par_email = textinput('par_email', '',
-			['placeholder'=>'E-Mail', 'style'=>'width: '.($par_left_col_size - 40).'px;', 'onkeyup'=>'toggle_registration();']);
-		$par_email->setRule('required|is_unique[bf_parents.par_email]', 'Begleitperson E-Mail');
+			['placeholder'=>'E-Mail', 'inputmode'=>'email', 'style'=>'width: '.($par_left_col_size - 40).'px;', 'onkeypress'=>'registration_press(event);', 'onkeyup'=>'registration_keyup(event);']);
+		$par_email->setRule('required|is_email|is_unique[bf_parents.par_email]', 'Begleitperson E-Mail');
 		$par_email->setFormat(['clear-box'=>true]);
 
 		$register = button('register', 'Registrieren',
@@ -363,7 +363,7 @@ class Checkin extends BF_Controller {
 					$code = $par_code->getValue();
 					if ($code == $parent_row['par_code']) {
 						$this->set_parent_logged_in($parent_row);
-						return redirect("checkin");
+						return redirect("registration");
 					}
 					$this->set_error("Unbekannte E-Mail oder falsche Kids-ID");
 				}
@@ -382,13 +382,13 @@ class Checkin extends BF_Controller {
 					$this->send_email($parent_row['par_email'], "[BlueFlame Kids] Hier ist deine Kids-ID",
 						"Hallo ".$parent_row['par_fullname'].",\r\n\r\n".
 						"hier ist deine Kids-ID: ".$parent_row['par_code']."\r\n\r\n".
-						"Mit dieser kannst du dich zusammen mit deiner E-Mail-Adresse einloggen und ".
+						"Mit dieser kannst du dich zusammen mit deiner E-Mail Adresse einloggen und ".
 						"deine Kinder für das BlueFlame Conference Kinderprogramm anmelden.\r\n\r\n".
 						"Dein BlueFlame Kids Team");
 				}
 				$this->set_success(['Eine E-Mail mit Ihrer Kids-ID wurde an '.b($par_email->getValue()).' gesendet. '.
 					'Geben Sie diese unten ein, um sich anzumelden.']);
-				return redirect("checkin");
+				return redirect("registration");
 			}
 		}
 
@@ -411,7 +411,7 @@ class Checkin extends BF_Controller {
 					"Hallo ".$par_fullname->getValue().",\r\n\r\n".
 					"willkommen bei der BlueFlame Kids Anmeldung.\r\n\r\n".
 					"Hier ist deine Kids-ID: ".$par_code."\r\n\r\n".
-					"Mit dieser kannst du dich zusammen mit deiner E-Mail-Adresse einloggen und ".
+					"Mit dieser kannst du dich zusammen mit deiner E-Mail Adresse einloggen und ".
 					"deine Kinder für das BlueFlame Conference Kinderprogramm anmelden.\r\n\r\n".
 					"Dein BlueFlame Kids Team");
 
@@ -419,16 +419,16 @@ class Checkin extends BF_Controller {
 					'Eine E-Mail mit Ihrer Kids-ID wurde an '.b($par_email->getValue()).' gesendet. '.
 					'Geben Sie diese unten ein, um sich anzumelden.']);
 				$par_login_email->setValue($par_email->getValue());
-				return redirect('checkin');
+				return redirect('registration');
 			}
 		}
 
-		$this->header('Anmelden', false);
+		$this->header('Anmeldung', false);
 
-		table(['class'=>'ipad-table', 'style'=>'padding-top: 2px; margin-left: auto; margin-right: auto;']);
+		table(['class'=>'ipad-table registration-table', 'style'=>'padding-top: 2px; margin-left: auto; margin-right: auto;']);
 		$ci_top_form->open();
 		tr();
-		td(['style'=>'background-color: black; color: white; text-align: center; padding: 8px 0px 4px 0px;']);
+		td(['style'=>'background-color: black; color: white; text-align: center; font-size: 22px; padding: 8px 0px 4px 0px;']);
 		out($go_back);
 		br();
 		out('Anmeldung');
@@ -446,7 +446,8 @@ class Checkin extends BF_Controller {
 		tr();
 		td();
 			$login_form->open();
-			table(['style'=>'border: 1px solid #009DDE; background-color: #649CBA; border-collapse: separate; border-spacing: 8px; width: 100%;']);
+
+			table(['style'=>'border: 1px solid #446C81; background-color: #649CBA; border-collapse: separate; border-spacing: 8px; width: 100%;']);
 			tr();
 				th(['style'=>'font-size: 16px; color: white; padding: 0px; text-align: left; width: '.$par_left_col_size.'px'], 'E-Mail:');
 				th(['style'=>'font-size: 16px; color: white; padding: 0px; text-align: left; width: '.$par_right_col_size.'px'], 'Kids-ID:');
@@ -463,22 +464,34 @@ class Checkin extends BF_Controller {
 				_td();
 			_tr();
 			_table();
+
+			/*
+			table(['class'=>'mobile-table',
+				'style'=>'border: 1px solid #009DDE; background-color: #649CBA; border-collapse: separate; border-spacing: 8px; width: 100%;']);
+			tr(th(['style'=>'font-size: 16px; color: white; padding: 0px; text-align: left; width: '.$par_left_col_size.'px'], 'E-Mail:'));
+			tr(td(['style'=>'padding: 0px; width: '.$par_left_col_size.'px'], $par_login_email));
+			tr(th(['style'=>'font-size: 16px; color: white; padding: 0px; text-align: left; width: '.$par_right_col_size.'px'], 'Kids-ID:'));
+			tr(td(['style'=>'padding: 0px; width: '.$par_right_col_size.'px'], $par_code));
+			tr(td(['style'=>'padding: 0px; text-align: right'], $login));
+			tr(td(['style'=>'padding: 0px; text-align: right'], $send_kids_id));
+			_table();
+			*/
+
 			$login_form->close();
 		_td();
 		_tr();
 		tr();
 		td(['style'=>'text-align: center; white-space: normal; word-wrap: normal;']);
-		out('Wenn Sie sich noch nicht als Begleitperson registriert haben,');
-		br();
-		out('benutzen Sie das folgende Formular, um sich zu registrieren.');
+		out('Wenn Sie sich noch nicht als Begleitperson registriert haben, benutzen Sie das folgende Formular, um sich zu registrieren.');
 		_td();
 		tr(['style'=>'background-color: black; color: white;']);
-		td(['style'=>'text-align: center; padding: 8px;']);
+		td(['style'=>'text-align: center; font-size: 20px; padding: 8px;']);
 		out('Registrierung');
 		_td();
 		_tr();
 		td();
 			$register_form->open();
+
 			table(['style'=>'border: 1px solid black; border-collapse: separate; border-spacing: 8px; background: #f1f1f1; width: 100%;']);
 			tr();
 				th(['style'=>'font-size: 16px; padding: 0px; text-align: left; width: '.$par_left_col_size.'px'], 'Begleitperson:');
@@ -502,29 +515,73 @@ class Checkin extends BF_Controller {
 				_td();
 			_tr();
 			_table();
+
+			/*
+			table(['class'=>'mobile-table',
+				'style'=>'border: 1px solid black; border-collapse: separate; border-spacing: 8px; background: #f1f1f1; width: 100%;']);
+			tr(th(['style'=>'font-size: 16px; padding: 0px; text-align: left; width: '.$par_left_col_size.'px'], 'Begleitperson:'));
+			tr(td(['style'=>'padding: 0px; width: '.$par_left_col_size.'px'], $par_fullname));
+			tr(th(['style'=>'font-size: 16px; padding: 0px; text-align: left; width: '.$par_right_col_size.'px'], 'Handy-Nr:'));
+			tr(td(['style'=>'padding: 0px; width: '.$par_right_col_size.'px'], $par_cellphone));
+			tr(th(['style'=>'font-size: 16px; padding: 0px; text-align: left; width: '.$par_left_col_size.'px'], 'E-Mail:'));
+			tr(td(['style'=>'padding: 0px; width: '.$par_left_col_size.'px'], $par_email));
+			tr(td(['style'=>'padding: 0px; text-align: right'], $register));
+			_table();
+			*/
+			
 			$register_form->close();
 		_td();
 		_table();
 		script();
 		out('
-			function toggle_login() {
-				var changed = false;
-				par_login_email = $("#par_login_email").val();
-				par_code = $("#par_code").val();
+			function login_press(ev) {
+				var par_login_email = $("#par_login_email").val();
+				var par_code = $("#par_code").val();
+
+				if (ev.key == "Enter") {
+					if (par_login_email == "" || par_code == "") {
+						ev.preventDefault();
+						if (par_code == "")
+							$("#par_code").focus();
+						else
+							$("#par_login_email").focus();
+					}
+				}
+			}
+			function login_keyup() {
+				var par_login_email = $("#par_login_email").val();
+				var par_code = $("#par_code").val();
+
+				$("#par_code").val(par_code.toUpperCase());
 
 				$("#login").prop("disabled", par_login_email == "" || par_code == "");
 				$("#send_kids_id").prop("disabled", par_login_email == "");
 			}
-			function toggle_registration() {
-				var changed = false;
+			function registration_press(ev) {
 				par_fullname = $("#par_fullname").val();
 				par_cellphone = $("#par_cellphone").val();
 				par_email = $("#par_email").val();
+				var filled_out = par_fullname != "" && par_cellphone != "" && par_email != "";
 
-				if (par_fullname != "" && par_cellphone != "" && par_email != "")
-					changed = true;
+				if (ev.key == "Enter") {
+					if (!filled_out) {
+						ev.preventDefault();
+						if (par_cellphone == "")
+							$("#par_cellphone").focus();
+						else if (par_email == "")
+							$("#par_email").focus();
+						else
+							$("#par_fullname").focus();
+					}
+				}
+			}
+			function registration_keyup(ev) {
+				par_fullname = $("#par_fullname").val();
+				par_cellphone = $("#par_cellphone").val();
+				par_email = $("#par_email").val();
+				var filled_out = par_fullname != "" && par_cellphone != "" && par_email != "";
 
-				$("#register").prop("disabled", !changed);
+				$("#register").prop("disabled", !filled_out);
 			}
 		');
 		_script();
@@ -541,7 +598,7 @@ class Checkin extends BF_Controller {
 			'X-Mailer' => 'PHP/' . phpversion()
 		);
 		
-		return mail($to, $subject, $message, $headers, '-fkontakt@blueflame-sh.de');
+		//return mail($to, $subject, $message, $headers, '-fkontakt@blueflame-sh.de');
 	}
 
 	private function kid_form($kid_i, $row, $current_period,
@@ -554,7 +611,7 @@ class Checkin extends BF_Controller {
 		$kid_nr->setValue($kid_i);
 		$kid_id->setValue($row['kid_id']);
 
-		$kid_checkin_form = new Form('kid_checkin_form_'.$kid_i, 'checkin', 2, array('class'=>'input-table'));
+		$kid_checkin_form = new Form('kid_checkin_form_'.$kid_i, 'registration', 2, array('class'=>'input-table'));
 
 		$kid_fullname = textinput('kid_fullname_'.$kid_i, $row['kid_fullname'],
 			['placeholder'=>'Vorname und Nachname', 'style'=>'width: '.($kid_left_col_size - 40).'px;', 'before'=>$row['kid_fullname'],
