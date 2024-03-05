@@ -472,7 +472,7 @@ table.scrollable-table tbody {
 	color: white;
 }
 
-.participant-group {
+.kids-group {
 	display: inline-block;
 	border: 1px solid black;
 	padding: 0px;
@@ -631,15 +631,15 @@ table.scrollable-table tbody {
 /* --------------------------- */
 /* Participants: */
 
-.participant-table td:nth-child(2) {
+.kids-table td:nth-child(2) {
 	min-width: 120px;
 }
 
-.participant-table td:nth-child(4) {
+.kids-table td:nth-child(4) {
 	padding: 2px 2px;
 }
 
-.participant-tabs {
+.kids-tabs {
     background-color: #C3E5F8;
     color: black;
     text-align: center;
@@ -649,12 +649,12 @@ table.scrollable-table tbody {
     margin-bottom: 4px;
 }
 
-.participant-tabs.active {
+.kids-tabs.active {
     background-color: #009DDE;
     color: white;
 }
 
-.participant-tabs:hover, .participant-tabs:active {
+.kids-tabs:hover, .kids-tabs:active {
     background-color: #009DDE;
     color: white;
 }

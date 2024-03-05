@@ -593,7 +593,7 @@ class BF_Controller extends BaseController {
 			_tr();
 			tr(array('style'=>'border-bottom: 1px solid black; padding: 8px 16px;'));
 			td(array('style'=>'width: 3px; padding: 0;'), nbsp());
-			td($this->link('participant', $title == 'Kinder'), 'Kinder ('.$kid_count.')');
+			td($this->link('kids', $title == 'Kinder'), 'Kinder ('.$kid_count.')');
 			td(array('style'=>'width: 3px; padding: 0;'), nbsp());
 			td($this->link('parents', $title == 'Begleitpersonen'), 'Begleitpersonen');
 			td(array('style'=>'width: 3px; padding: 0;'), nbsp());
@@ -610,7 +610,7 @@ class BF_Controller extends BaseController {
 
 			hidden('login_full_name', $this->stf_login_name);
 			if ($title != 'Login') {
-				$attr = $this->link('login?action=logout', false);
+				$attr = $this->link('admin-login?action=logout', false);
 				$attr['id'] = 'logout_menu_item';
 				$attr['onmouseover'] = 'mouseOverLogout(this);';
 				$attr['onmouseout'] = 'mouseOutLogout(this, $(\'#login_full_name\'));';

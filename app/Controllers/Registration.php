@@ -39,7 +39,7 @@ class Registration extends BF_Controller {
 				if (empty($this->session->ses_prev_page) ||
 					$this->session->ses_prev_page == 'ipad' ||
 					$this->session->ses_prev_page == 'checkin')
-					return redirect("participant");
+					return redirect("kids");
 				return redirect($this->session->ses_prev_page);
 			}
 			return redirect('ipad');

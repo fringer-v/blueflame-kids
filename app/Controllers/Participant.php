@@ -259,7 +259,7 @@ class Participant extends BF_Controller {
 		$hst_page = in('hst_page', 1);
 		$hst_page->persistent();
 
-		$display_kid = new Form('display_kid', 'participant', 1, [ 'class'=>'input-table' ]);
+		$display_kid = new Form('display_kid', 'kids', 1, [ 'class'=>'input-table' ]);
 		$set_kid_id = $display_kid->addHidden('set_kid_id');
 		$kid_filter = $display_kid->addTextInput('kid_filter', '', '', [ 'placeholder'=>'Suchfilter' ]);
 		$kid_filter->persistent();
@@ -275,7 +275,7 @@ class Participant extends BF_Controller {
 		}
 		$select_group = $display_kid->addSelect('select_group', '', $group_options, '#', [ 'onchange'=>'get_group_parts(); return false;' ]);
 
-		$update_kid = new Form('update_kid', 'participant', 2, [ 'class'=>'input-table', 'style'=>'width: 100%;' ]);
+		$update_kid = new Form('update_kid', 'kids', 2, [ 'class'=>'input-table', 'style'=>'width: 100%;' ]);
 		if ($read_only)
 			$update_kid->disable();
 		$kid_id = $update_kid->addHidden('kid_id');
@@ -285,7 +285,7 @@ class Participant extends BF_Controller {
 		if ($set_kid_id->submitted()) {
 			$kid_id->setValue($set_kid_id->getValue());
 			$hst_page->setValue(1);
-			return redirect("participant");
+			return redirect("kids");
 		}
 
 		$kid_row = $this->get_kid_row($kid_id_v);
@@ -299,7 +299,7 @@ class Participant extends BF_Controller {
 
 		// DECLARE: An u. Abmeldung -----------------
 		$register_data = $update_kid->addRow('');
-		$group_list = new AsyncLoader('register_group_list', 'participant/getgroups?tab=register', [ 'grp_arg'=>'""', 'action'=>'""' ] );
+		$group_list = new AsyncLoader('register_group_list', 'kids/getgroups?tab=register', [ 'grp_arg'=>'""', 'action'=>'""' ] );
 		$update_kid->addRow($group_list->html());
 
 		$parent = table(['style'=>'width: 100%; background-color: lightgrey;']);
@@ -312,14 +312,14 @@ class Participant extends BF_Controller {
 		if (!empty($co_kid_list)) {
 			$parent->add(tr(
 				th([ 'style'=>'padding: 5px;' ], a([ 'onclick'=>'get_parent_parts();' ], 'Mit Registriert:')), 
-				td([ 'style'=>'padding: 5px;', 'colspan'=>'3' ], $this->link_list('participant?set_kid_id=', $co_kid_list))
+				td([ 'style'=>'padding: 5px;', 'colspan'=>'3' ], $this->link_list('kids?set_kid_id=', $co_kid_list))
 				));
 			/*
 			$co_reg = b();
 			$co_reg->add(a([ 'onclick'=>'get_parent_parts();' ], 'Mit Registriert'));
 			$co_reg->add(': ');
 			$co_reg->add(_b());
-			$co_reg->add($this->link_list('participant?set_kid_id=', $co_kid_list));
+			$co_reg->add($this->link_list('kids?set_kid_id=', $co_kid_list));
 			$f1 = $update_kid->addField('', $co_reg);
 			$f1->setFormat([ 'nolabel'=>true, 'colspan'=>'*', 'style'=>'white-space: normal; max-width: 600px;' ]);
 			*/
@@ -350,7 +350,7 @@ class Participant extends BF_Controller {
 		$kid_parent_id = $update_kid->addHidden('kid_parent_id', $kid_row['kid_parent_id']);
 		$age_field = $update_kid->addSpace();
 
-		$group_list = new AsyncLoader('modify_group_list', 'participant/getgroups?tab=modify', [ 'grp_arg'=>'""', 'action'=>'""' ] );
+		$group_list = new AsyncLoader('modify_group_list', 'kids/getgroups?tab=modify', [ 'grp_arg'=>'""', 'action'=>'""' ] );
 		$update_kid->addRow($group_list->html());
 
 		$kid_notes = $update_kid->addTextArea('kid_notes', 'Hinweise', $kid_row['kid_notes'],
@@ -411,7 +411,7 @@ class Participant extends BF_Controller {
 
 		if ($clear_kid->submitted()) {
 			$kid_id->setValue(0);
-			return redirect("participant");
+			return redirect("kids");
 		}
 
 		if ($clear_nr_name->submitted()) {
@@ -452,7 +452,7 @@ class Participant extends BF_Controller {
 							$kid_page->setValue(1);
 							$kid_id->setValue($kid_id_v);
 							$this->set_success($kid_fullname->getValue().' aufgenommen');
-							return redirect("participant");
+							return redirect("kids");
 					}
 				}
 				else {
@@ -460,7 +460,7 @@ class Participant extends BF_Controller {
 						[ 'par_code' => $kid_row['par_code'], 'par_fullname' => $kid_row['par_fullname'] ], $this->session->stf_login_id));
 					if (!$this->have_error()) {
 						$this->set_success($kid_fullname->getValue().' geändert');
-						return redirect("participant");
+						return redirect("kids");
 					}
 				}
 			}
@@ -547,7 +547,7 @@ class Participant extends BF_Controller {
 						$this->unreserve_group($staff_row['stf_reserved_age_level'], $staff_row['stf_reserved_group_number']);
 
 					$this->set_success($kid_fullname->getValue().' '.$comment);
-					return redirect("participant");
+					return redirect("kids");
 				}
 			}
 
@@ -586,7 +586,7 @@ class Participant extends BF_Controller {
 
 				$this->set_success($kid_row['par_fullname'].' '.$msg);
 				$parent_comment->setValue('');
-				return redirect("participant");
+				return redirect("kids");
 			}
 			
 			if ($escallate->submitted()) {
@@ -609,7 +609,7 @@ class Participant extends BF_Controller {
 
 					$this->set_success($kid_row['par_fullname'].' ruf eskaliert');
 					$parent_comment->setValue('');
-					return redirect("participant");
+					return redirect("kids");
 				}
 			}
 			
@@ -633,7 +633,7 @@ class Participant extends BF_Controller {
 					'hst_action'=>$action]);
 
 				$this->set_success($kid_row['par_fullname'].' '.$msg);
-				return redirect("participant");
+				return redirect("kids");
 			}
 		}
 
@@ -720,7 +720,7 @@ class Participant extends BF_Controller {
 				$call_super->hide();
 			}
 
-			$history_list_loader = new AsyncLoader('history_list', 'participant/gethistory');
+			$history_list_loader = new AsyncLoader('history_list', 'kids/gethistory');
 
 			$curr_age = get_age($kid_birthday->getDate());
 			$age_field->setValue(div(array('id' => 'kid_age'), is_null($curr_age) ? '&nbsp;-' : b(nbsp().$curr_age." Jahre")));
@@ -805,7 +805,7 @@ class Participant extends BF_Controller {
 		//$reg_data->add(tr(th(['align'=>'right' ], 'Handy-Nr:'),
 		//	td(['style'=>'padding-left: 10px; white-space: normal;' ], $tel)));
 
-		$kids_list_loader = new AsyncLoader('kids_list', 'participant/getkids', [ 'kid_filter' ]);
+		$kids_list_loader = new AsyncLoader('kids_list', 'kids/getkids', [ 'kid_filter' ]);
 
 		$kid_tab = in('kid_tab', 'register');
 		$kid_tab->persistent();
@@ -922,7 +922,7 @@ class Participant extends BF_Controller {
 				else
 					return;
 				var args = "tab="+tab+"&gpa="+$("#"+tab+"_groups_per_age").val()+"&cnt="+$("#history_count").val();
-				$.getScript("participant/pollgroups?"+args);
+				$.getScript("kids/pollgroups?"+args);
 			}
 		');
 		out('
@@ -957,7 +957,7 @@ class Participant extends BF_Controller {
 				}
 
 				if (new_value.length == 4) {
-					$.getJSON("participant/getparent?code="+new_value,
+					$.getJSON("kids/getparent?code="+new_value,
 						function(data) {
 							kid_parent_id.val(data["par_id"]);
 							kid_parent_name.html(data["par_fullname"]);
@@ -977,9 +977,9 @@ class Participant extends BF_Controller {
 	private function tabAttr($kid_tab, $tab, $style) {
 		$attr = array('id'=>'tab_selector_'.$tab);
 		if ($kid_tab->getValue() == $tab)
-			$attr['class'] = 'participant-tabs active';
+			$attr['class'] = 'kids-tabs active';
 		else
-			$attr['class'] = 'participant-tabs';
+			$attr['class'] = 'kids-tabs';
 		$attr['onclick'] = 'showTab("'.$tab.'"); '.$tab.'_group_list();';
 		$attr['style'] = $style;
 		return $attr;
@@ -1121,8 +1121,8 @@ class Participant extends BF_Controller {
 		}
 
 		$kid_table = new ParticipantTable($sql, $args,
-			array('class'=>'details-table participant-table', 'style'=>'width: 600px;'));
-		$kid_table->setPagination('participant?kid_page=', 20, $kid_page);
+			array('class'=>'details-table kids-table', 'style'=>'width: 600px;'));
+		$kid_table->setPagination('kids?kid_page=', 20, $kid_page);
 		$kid_table->setOrderBy($order_by);
 
 		table(array('style'=>'border-collapse: collapse;'));
@@ -1256,7 +1256,7 @@ class Participant extends BF_Controller {
 				$limit = if_empty(arr_nvl($group_limits, $a.'_'.$i, 0), DEFAULT_GROUP_SIZE);
 
 				// GROUP BOX:
-				table([ 'class'=>'participant-group g-'.$a, 'onclick'=>$table_onclick, 'style'=>$opa ]);
+				table([ 'class'=>'kids-group g-'.$a, 'onclick'=>$table_onclick, 'style'=>$opa ]);
 				tr();
 				$row_style = 'padding: 2px 0px 0px 0px; text-align: center;';
 				td([ 'onclick'=>$onclick, 'style'=>$row_style ], span([ 'class'=>'group-number' ], $i));
@@ -1296,7 +1296,7 @@ class Participant extends BF_Controller {
 			FROM bf_history LEFT JOIN bf_staff ON stf_id = hst_stf_id
 			WHERE hst_kid_id = ? ORDER BY hst_timestamp DESC',
 			[ $kid_id_v ], [ 'class'=>'details-table history-table' ]);
-		$history_table->setPagination('participant?hst_page=', 10, $hst_page);
+		$history_table->setPagination('kids?hst_page=', 10, $hst_page);
 
 		table(array('style'=>'border-collapse: collapse;'));
 		tr(td([ 'align'=>'left', 'valign'=>'top' ], $history_table->paginationHtml()));

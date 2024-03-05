@@ -60,7 +60,7 @@ class Login extends BF_Controller {
 					if (password_verify($pwd, $staff_row['stf_password'])) {
 						$this->set_staff_logged_in($staff_row);
 						if (is_empty($staff_row['stf_technician']))
-							return redirect("participant");
+							return redirect("kids");
 						return redirect("calllist");
 					}
 					$this->error = "Passwort falsch";

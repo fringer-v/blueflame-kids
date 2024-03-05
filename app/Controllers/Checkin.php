@@ -75,14 +75,6 @@ class Checkin extends BF_Controller {
 		$kid_fullname = in('kid_fullname_'.$kid_nr_v);
 		$kid_fullname->setRule('required', 'Namen des Kindes');
 
-		if ($go_back->submitted()) {
-			if (empty($this->session->ses_prev_page) ||
-				$this->session->ses_prev_page == 'ipad' ||
-				$this->session->ses_prev_page == 'registration')
-				return redirect('participant');
-			return redirect($this->session->ses_prev_page);
-		}
-
 		if ($update_parent->submitted()) {
 			$this->set_error($par_fullname->validate($ci_parent_form));
 			if (!$this->have_error())
@@ -297,8 +289,6 @@ class Checkin extends BF_Controller {
 		$current_period = $this->db_model->get_setting('current-period');
 
 		$ci_top_form = new Form('ci_top_form', 'registration');
-		$go_back = imagebutton('go_back', '../img/bf-kids-logo3.png', ['style'=>'height: 34px; width: auto;']);
-		$go_back->autoEchoOff();
 
 		$par_left_col_size = 347;
 		$par_right_col_size = 187;
@@ -429,7 +419,7 @@ class Checkin extends BF_Controller {
 		$ci_top_form->open();
 		tr();
 		td(['style'=>'background-color: black; color: white; text-align: center; font-size: 22px; padding: 8px 0px 4px 0px;']);
-		out($go_back);
+		img(['src'=>'../img/bf-kids-logo3.png', 'style'=>'height: 34px; width: auto;']);
 		br();
 		out('Anmeldung');
 		_td();

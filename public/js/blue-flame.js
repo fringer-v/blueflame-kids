@@ -36,12 +36,12 @@ function showTab(which_tab) {
 	$('#tab_content_'+which_tab).show();
 	
 	//reset all the "show X settings group" buttons to the default style
-	$('[id*="tab_selector_"]').attr('class', 'participant-tabs');
+	$('[id*="tab_selector_"]').attr('class', 'kids-tabs');
 
 	//highlight the selected one
-	$('#tab_selector_'+which_tab).attr('class', 'participant-tabs active active');
+	$('#tab_selector_'+which_tab).attr('class', 'kids-tabs active active');
 
-	$("#kids_list").load("participant/getkids?kid_tab="+which_tab);
+	$("#kids_list").load("kids/getkids?kid_tab="+which_tab);
 
 	return false;
 }
