@@ -251,7 +251,7 @@ class Admin extends BF_Controller {
 		if ($set_current_period->submitted()) {
 			$current_period = $set_current_period->getValue();
 			$this->db_model->set_setting('current-period', (integer) $current_period);
-			return redirect("admin");
+			return redirect("settings");
 		}
 
 		$import_staff_form = new Form('import_staff_form', '', 1, [ 'class'=>'input-table' ]);
@@ -283,7 +283,7 @@ class Admin extends BF_Controller {
 				$this->cancel_group_leader($stf_id, true);
 			}
 
-			return redirect("admin");
+			return redirect("settings");
 		}
 
 		$import_kids_form = new Form('import_kids_form', '', 1, [ 'class'=>'input-table' ]);
@@ -359,7 +359,7 @@ class Admin extends BF_Controller {
 			}
 			*/
 
-			return redirect("admin");
+			return redirect("settings");
 		}
 	
 		$show_deleted_form = new Form('show_deleted_form', '', 1, [ 'class'=>'input-table' ]);
@@ -368,7 +368,7 @@ class Admin extends BF_Controller {
 		if ($set_how_deleted->submitted()) {
 			$show_deleted_staff = $set_how_deleted->getValue();
 			$this->db_model->set_setting('show-deleted-staff', (integer) $show_deleted_staff);
-			return redirect("admin");
+			return redirect("settings");
 		}
 	
 		$this->header('Database update');

@@ -36,7 +36,7 @@ class Checkin extends BF_Controller {
 		$ci_parent_form->addHidden('par_id', $parent_row['par_id']);
 		$par_fullname = textinput('par_fullname', $parent_row['par_fullname'],
 			['placeholder'=>'Name', 'style'=>'width: '.($par_left_col_size - 40).'px;',
-				'onkeyup'=>'capitalize($(this)); toggle_submit_parent();', 'before'=>$parent_row['par_fullname']]);
+				'onkeyup'=>'capitalizeName($(this), event); toggle_submit_parent();', 'before'=>$parent_row['par_fullname']]);
 		$par_fullname->setRule('required|is_unique[bf_parents.par_fullname.par_id]', 'Name');
 		$par_fullname->autoEchoOff();
 		$par_fullname->setFormat(['clear-box'=>true]);
@@ -303,7 +303,7 @@ class Checkin extends BF_Controller {
 		$par_login_email->persistent();
 
 		$par_code = textinput('par_code', '',
-			['placeholder'=>'Kids-ID', 'style'=>'width: '.($par_right_col_size - 40).'px;', 'onkeypress'=>'login_press(event);', 'onkeyup'=>'login_keyup(event);']);
+			['placeholder'=>'Kids-ID', 'style'=>'width: '.($par_right_col_size - 40).'px;', 'onkeypress'=>'login_press(event);', 'onkeyup'=>'kidsID($(this)); login_keyup(event);']);
 		$par_code->setAttribute('before', $par_code->getValue());
 		$par_code->setRule('required');
 		$par_code->setFormat(['clear-box'=>true]);
@@ -321,7 +321,7 @@ class Checkin extends BF_Controller {
 
 		$register_form = new Form('register_form', url('login'));
 		$par_fullname = textinput('par_fullname', '',
-			['placeholder'=>'Vorname und Nachname', 'style'=>'width: '.($par_left_col_size - 40).'px;', 'onkeypress'=>'registration_press(event);', 'onkeyup'=>'registration_keyup(event);']);
+			['placeholder'=>'Vorname und Nachname', 'style'=>'width: '.($par_left_col_size - 40).'px;', 'onkeypress'=>'registration_press(event);', 'onkeyup'=>'capitalizeName($(this), event); registration_keyup(event);']);
 		$par_fullname->setRule('required|is_unique[bf_parents.par_fullname]', 'Begleitperson Name');
 		$par_fullname->setFormat(['clear-box'=>true]);
 
@@ -542,8 +542,6 @@ class Checkin extends BF_Controller {
 				var par_login_email = $("#par_login_email").val();
 				var par_code = $("#par_code").val();
 
-				$("#par_code").val(par_code.toUpperCase());
-
 				$("#login").prop("disabled", par_login_email == "" || par_code == "");
 				$("#send_kids_id").prop("disabled", par_login_email == "");
 			}
@@ -605,7 +603,7 @@ class Checkin extends BF_Controller {
 
 		$kid_fullname = textinput('kid_fullname_'.$kid_i, $row['kid_fullname'],
 			['placeholder'=>'Vorname und Nachname', 'style'=>'width: '.($kid_left_col_size - 40).'px;', 'before'=>$row['kid_fullname'],
-				'onkeyup'=>'capitalize($(this)); toggle_submit_kid('.$kid_i.', '.PERIOD_COUNT.');']);
+				'onkeyup'=>'capitalizeName($(this), event); toggle_submit_kid('.$kid_i.', '.PERIOD_COUNT.');']);
 		$kid_fullname->setFormat(['clear-box'=>true]);
 		$kid_birthday = new NumericField('kid_birthday_'.$kid_i, $row['kid_birthday'],
 			['placeholder'=>'DD.MM.JJJJ', 'style'=>'font-family: Monospace; width: '.($kid_mid_col_size + $kid_right_col_size - 40).'px;', 'before'=>$row['kid_birthday'],

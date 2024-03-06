@@ -304,11 +304,11 @@ class Participant extends BF_Controller {
 
 		$parent = table(['style'=>'width: 100%; background-color: lightgrey;']);
 		$parent->add(tr(
-			th([ 'style'=>'padding: 5px;' ], 'Begleitperson:'), td([ 'style'=>'padding: 5px;' ], $kid_row['par_fullname']),
-			th([ 'style'=>'padding: 5px;' ], 'Kids-ID:'), td([ 'style'=>'padding: 5px;' ], $kid_row['par_code'])));
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'Begleitperson:'), td([ 'style'=>'padding: 5px; width: 40%;' ], $kid_row['par_fullname']),
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'Kids-ID:'), td([ 'style'=>'padding: 5px; width: 40%;' ], $kid_row['par_code'])));
 		$parent->add(tr(
-			th([ 'style'=>'padding: 5px;' ], 'Handy-Nr:'), td([ 'style'=>'padding: 5px;' ], $kid_row['par_cellphone']),
-			th([ 'style'=>'padding: 5px;' ], 'E-Mail:'), td([ 'style'=>'padding: 5px;' ], $kid_row['par_email'])));
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'Handy-Nr:'), td([ 'style'=>'padding: 5px; width: 40%;' ], $kid_row['par_cellphone']),
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'E-Mail:'), td([ 'style'=>'padding: 5px; width: 40%;' ], $kid_row['par_email'])));
 		if (!empty($co_kid_list)) {
 			$parent->add(tr(
 				th([ 'style'=>'padding: 5px;' ], a([ 'onclick'=>'get_parent_parts();' ], 'Mit Registriert:')), 
@@ -341,7 +341,7 @@ class Participant extends BF_Controller {
 		$number1 = $update_kid->addField('Kid-Nr');
 		$number1->setFormat([ 'colspan'=>'2' ]);
 		$kid_fullname = $update_kid->addTextInput('kid_fullname', 'Name',
-			$kid_row['kid_fullname'], [ 'placeholder'=>'Name', 'onkeyup'=>'capitalize($(this));', 'style'=>'width: 500px' ]);
+			$kid_row['kid_fullname'], [ 'placeholder'=>'Name', 'onkeyup'=>'capitalizeName($(this), event);', 'style'=>'width: 500px' ]);
 		$kid_fullname->setRule('required');
 		$kid_fullname->setFormat([ 'colspan'=>'2' ]);
 		$kid_birthday = $update_kid->addTextInput('kid_birthday', 'Geburtstag',
@@ -362,11 +362,11 @@ class Participant extends BF_Controller {
 		$parent_code->setForm($update_kid);
 		$parent = table(['style'=>'width: 100%; background-color: lightgrey;']);
 		$parent->add(tr(
-			th([ 'style'=>'padding: 5px;' ], 'Begleitperson:'), td([ 'id'=>'kid_parent_name', 'style'=>'padding: 5px;' ], $kid_row['par_fullname']),
-			th([ 'style'=>'padding: 5px;' ], 'Kids-ID:'), td([ 'style'=>'padding: 5px;' ], $parent_code)));
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'Begleitperson:'), td([ 'id'=>'kid_parent_name', 'style'=>'padding: 5px; width: 40%;' ], $kid_row['par_fullname']),
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'Kids-ID:'), td([ 'style'=>'padding: 5px; width: 40%;' ], $parent_code)));
 		$parent->add(tr(
-			th([ 'style'=>'padding: 5px;' ], 'Handy-Nr:'), td([ 'id'=>'kid_parent_cellphone', 'style'=>'padding: 5px;' ], $kid_row['par_cellphone']),
-			th([ 'style'=>'padding: 5px;' ], 'E-Mail:'), td([ 'id'=>'kid_parent_email', 'style'=>'padding: 5px;' ], $kid_row['par_email'])));
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'Handy-Nr:'), td([ 'id'=>'kid_parent_cellphone', 'style'=>'padding: 5px; width: 40%;' ], $kid_row['par_cellphone']),
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'E-Mail:'), td([ 'id'=>'kid_parent_email', 'style'=>'padding: 5px; width: 40%;' ], $kid_row['par_email'])));
 		$parent->add(_table());
 		$parent_cell = $update_kid->addRow($parent);
 		$parent_cell->setFormat([ 'nolabel'=>true, 'colspan'=>'*', 'style'=>'padding: 5px 5px;' ]);
@@ -388,11 +388,11 @@ class Participant extends BF_Controller {
 
 		$parent = table(['style'=>'width: 100%; background-color: lightgrey;']);
 		$parent->add(tr(
-			th([ 'style'=>'padding: 5px;' ], 'Begleitperson:'), td([ 'style'=>'padding: 5px;' ], $kid_row['par_fullname']),
-			th([ 'style'=>'padding: 5px;' ], 'Kids-ID:'), td([ 'style'=>'padding: 5px;' ], $kid_row['par_code'])));
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'Begleitperson:'), td([ 'style'=>'padding: 5px; width: 40%;' ], $kid_row['par_fullname']),
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'Kids-ID:'), td([ 'style'=>'padding: 5px; width: 40%;' ], $kid_row['par_code'])));
 		$parent->add(tr(
-			th([ 'style'=>'padding: 5px;' ], 'Handy-Nr:'), td([ 'style'=>'padding: 5px;' ], $kid_row['par_cellphone']),
-			th([ 'style'=>'padding: 5px;' ], 'E-Mail:'), td([ 'style'=>'padding: 5px;' ], $kid_row['par_email'])));
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'Handy-Nr:'), td([ 'style'=>'padding: 5px; width: 40%;' ], $kid_row['par_cellphone']),
+			th([ 'style'=>'padding: 5px; width: 10%;' ], 'E-Mail:'), td([ 'style'=>'padding: 5px; width: 40%;' ], $kid_row['par_email'])));
 		$parent->add(_table());
 		$parent_cell = $update_kid->addRow($parent);
 		$parent_cell->setFormat([ 'nolabel'=>true, 'colspan'=>'*', 'style'=>'padding: 5px 5px;' ]);
@@ -427,7 +427,15 @@ class Participant extends BF_Controller {
 
 		if ($new_kid->submitted() || $save_kid->submitted()) {
 			$this->error = $update_kid->validate('tab_modify');
-			if (is_empty($this->error)) {
+			if (!$this->have_error()) {
+				if (empty($kid_parent_id->getValue())) {
+					if (empty($parent_code->getValue()))
+						$this->set_error("Begleitperson Kids-ID muss angegeben werden");
+					else
+						$this->set_error("Begleitperson Kids-ID ist unbekannt");
+				}
+			}
+			if (!$this->have_error()) {
 				$staff_row = $this->get_staff_row($this->session->stf_login_id);
 				$group_reserved = if_empty($staff_row['stf_reserved_count'], 0) > 0;
 
@@ -927,35 +935,7 @@ class Participant extends BF_Controller {
 		');
 		out('
 			function parent_code_changed(text_input, kid_parent_id, kid_parent_name, kid_parent_cellphone, kid_parent_email) {
-				var start = text_input.get(0).selectionStart;
-				var end = text_input.get(0).selectionEnd;
-				var value = text_input.val();
-				var new_value = "";
-				var ch;
-
-				for (var i=0; i<value.length && i<4; i++) {
-					ch = value.charAt(i);
-					if (i == 0 || i == 2) {
-						if (ch >= "a" && ch <= "z")
-							new_value += ch.toUpperCase();
-						else if (ch >= "A" && ch <= "Z")
-							new_value += ch;
-						else
-							break;
-					}
-					else {
-						if (ch >= "0" && ch <= "9")
-							new_value += ch;
-						else
-							break;
-					}	
-				}
-
-				if (value != new_value) {
-					text_input.val(new_value);
-					text_input.get(0).setSelectionRange(start, end);
-				}
-
+				new_value = kidsID(text_input);
 				if (new_value.length == 4) {
 					$.getJSON("kids/getparent?code="+new_value,
 						function(data) {

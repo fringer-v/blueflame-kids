@@ -63,5 +63,3 @@ $routes->get('registration', 'Checkin::registration');
 $routes->post('registration', 'Checkin::registration');
 $routes->get('login', 'Checkin::login');
 $routes->post('login', 'Checkin::login');
-
-

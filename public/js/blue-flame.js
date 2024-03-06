@@ -196,31 +196,33 @@ function listAppend(list, value, sep) {
 	return list + value;
 }
 
-function capitalize(field) {
+function capitalizeName(field, ev) {
 	var start = field.get(0).selectionStart;
 	var end = field.get(0).selectionEnd;
 	var value = field.val();
-	var trailing_space = value.endsWith(" ");
-	var words = value.trim().split(" ");
-	var new_value = "";
-	for (var i=0; i<words.length; i++) {
-		var word = words[i].trim();
-		if (word.length > 0) {
-			if (word != "v" && word != "vo" && word != "von")
+	var new_value = value;
+
+	if (value.length > 0 && start == value.length && ev.key.length == 1) {
+		var i = value.length-1;
+
+		while (i >= 0 &&  value.charAt(i) != " ")
+			i--;
+		if (i < value.length-1) {
+			word = value.substr(i+1);
+			if (word != "v" && word != "vo" && word != "von") {
 				word = word.charAt(0).toUpperCase() + word.slice(1);
-			new_value = listAppend(new_value, word, " ");
+				new_value = value.substr(0, i+1) + word;
+			}
 		}
 	}
-	if (trailing_space)
-		new_value += " ";
-
+		
 	if (value != new_value) {
 		field.val(new_value);
 		field.get(0).setSelectionRange(start, end);
 	}
 }
 
-function allCaps(field, max_len) {
+function allCaps(field, max_len = 0) {
 	var start = field.get(0).selectionStart;
 	var end = field.get(0).selectionEnd;
 	var value = field.val();
@@ -234,6 +236,43 @@ function allCaps(field, max_len) {
 		field.val(new_value);
 		field.get(0).setSelectionRange(start, end);
 	}
+}
+
+function kidsID(field) {
+	var start = field.get(0).selectionStart;
+	var end = field.get(0).selectionEnd;
+	var value = field.val();
+	var new_value = "";
+	var ch;
+
+	if (start == value.length) {
+		for (var i=0; i<value.length && i<4; i++) {
+			ch = value.charAt(i);
+			if (i == 0 || i == 2) {
+				if (ch >= "a" && ch <= "z")
+					new_value += ch.toUpperCase();
+				else if (ch >= "A" && ch <= "Z")
+					new_value += ch;
+				else
+					break;
+			}
+			else {
+				if (ch >= "0" && ch <= "9")
+					new_value += ch;
+				else
+					break;
+			}	
+		}
+	}
+	else
+		new_value = value.substr(0, 4).toUpperCase();
+
+	if (value != new_value) {
+		field.val(new_value);
+		field.get(0).setSelectionRange(start, end);
+	}
+	
+	return new_value;
 }
 
 function mouseOverLogout(object) {

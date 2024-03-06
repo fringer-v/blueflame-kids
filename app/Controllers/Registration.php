@@ -226,6 +226,7 @@ class Registration extends BF_Controller {
 		$reg_kids->setValue($reg_kids_v);
 	}
 
+	/*
 	public function iframe()
 	{
 		//if (!$this->authorize_staff())
@@ -306,7 +307,7 @@ class Registration extends BF_Controller {
 		}
 
 		$kid_fullname = textinput('kid_fullname', $edit_part['kid_fullname'],
-			[ 'placeholder'=>'Name', 'style'=>'width: 160px;', 'onkeyup'=>'capitalize($(this));' ]);
+			[ 'placeholder'=>'Name', 'style'=>'width: 160px;', 'onkeyup'=>'capitalizeName($(this), event);' ]);
 		$kid_fullname->setFormat([ 'clear-box'=>true ]);
 		$kid_fullname->setRule('required');
 		$kid_birthday = new NumericField('kid_birthday', $edit_part['kid_birthday'],
@@ -315,10 +316,10 @@ class Registration extends BF_Controller {
 		$kid_birthday->setRule('is_valid_date', 'Geburtstag');
 
 		$kid_parent_firstname = textinput('kid_parent_firstname', $edit_part['kid_parent_firstname'],
-			[ 'placeholder'=>'Vorname', 'style'=>'width: 160px;', 'onkeyup'=>'capitalize($(this));' ]);
+			[ 'placeholder'=>'Vorname', 'style'=>'width: 160px;', 'onkeyup'=>'capitalizeName($(this), event);' ]);
 		$kid_parent_firstname->setFormat([ 'clear-box'=>true ]);
 		$kid_parent_lastname = textinput('kid_parent_lastname', $edit_part['kid_parent_lastname'],
-			[ 'placeholder'=>'Nachname', 'style'=>'width: 220px;', 'onkeyup'=>'capitalize($(this));' ]);
+			[ 'placeholder'=>'Nachname', 'style'=>'width: 220px;', 'onkeyup'=>'capitalizeName($(this), event);' ]);
 		$kid_parent_lastname->setFormat([ 'clear-box'=>true ]);
 		$kid_parent_cellphone = new NumericField('kid_parent_cellphone', $edit_part['kid_parent_cellphone'],
 			[ 'style'=>'width: 220px; font-family: Monospace;' ]);
@@ -568,4 +569,5 @@ class Registration extends BF_Controller {
 		$this->footer();
 		return '';
 	}
+	*/
 }
