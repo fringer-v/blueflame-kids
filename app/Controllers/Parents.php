@@ -20,6 +20,46 @@ class ParentTable extends Table {
 		return nix();
 	}
 
+	public function columnAttributes($field) {
+		switch ($field) {
+			case 'button_column':
+				return [ 'style'=>'text-align: center; width: 32px;' ];
+		}
+		return null;
+	}
+
+	public function cellValue($field, $row) {
+		switch ($field) {
+			case 'par_code':
+			case 'par_fullname':
+			case 'par_email':
+				if (empty($row[$field]))
+					return nbsp();
+				return $row[$field];
+			case 'button_column':
+				return a([ 'class'=>'button-black',
+					'style'=>'display: block; color: white; height: 24px; width: 32px; text-align: center; line-height: 26px; border-radius: 6px;',
+					'onclick'=>'$("#set_par_id").val('.$row['par_id'].'); $("#display_parent").submit();' ], out('&rarr;'))->html();
+		}
+		return nix();
+	}
+}
+
+class ParentKidsTable extends Table {
+	public function columnTitle($field) {
+		switch ($field) {
+			case 'par_code':
+				return 'Kids-ID';
+			case 'par_fullname':
+				return 'Name';
+			case 'par_email':
+				return 'E-Mail';
+			case 'button_column':
+				return '&nbsp;';
+		}
+		return nix();
+	}
+
 	public function cellValue($field, $row) {
 		switch ($field) {
 			case 'par_code':
@@ -65,7 +105,7 @@ class Parents extends BF_Controller {
 		$clear_filter = $display_parent->addSubmit('clear_filter', 'X',
 			[ 'class'=>'button-black', 'onclick'=>'$("#par_filter").val(""); parent_list(); return false;' ]);
 
-		$update_parent = new Form('update_parent', 'parents', 1, array('class'=>'input-table'));
+		$update_parent = new Form('update_parent', 'parents', 1, ['class'=>'input-table', 'style'=>'width: 100%;']);
 		if ($read_only)
 			$update_parent->disable();
 		$par_id = $update_parent->addHidden('par_id');
@@ -88,9 +128,9 @@ class Parents extends BF_Controller {
 		$par_fullname->setRule('required|is_unique[bf_parents.par_fullname.par_id]');
 
 		$par_email = $update_parent->addTextInput('par_email', 'E-Mail', $parent_row['par_email']);
-		$par_email->setRule('is_unique[bf_parents.par_email.par_id]');
+		$par_email->setRule('is_email|is_unique[bf_parents.par_email.par_id]');
 		$par_cellphone = $update_parent->addTextInput('par_cellphone', 'Handy-Nr', $parent_row['par_cellphone']);
-		$par_cellphone->setRule('is_unique[bf_parents.par_cellphone.par_id]');
+		$par_cellphone->setRule('is_phone|is_unique[bf_parents.par_cellphone.par_id]');
 
 		// Buttons:
 		if (is_empty($par_id_v)) {
@@ -101,6 +141,12 @@ class Parents extends BF_Controller {
 			$save_parent = $update_parent->addSubmit('save_parent', 'Änderung Sichern', array('class'=>'button-black'));
 			$clear_parent = $update_parent->addSubmit('clear_parent', 'Weiteres Aufnehmen...', array('class'=>'button-black'));
 		}
+		
+		$display_kid = new Form('display_kid', 'kids', 1, [ 'class'=>'input-table' ]);
+		$set_kid_id = $display_kid->addHidden('set_kid_id');
+
+		$parent_kids_table = $this->kids_table(empty($parent_row['par_code']) ? '#' : $parent_row['par_code']);
+		//$parent_kids_table->hasButton = false;
 
 		if ($clear_parent->submitted()) {
 			$par_id->setValue(0);
@@ -111,14 +157,13 @@ class Parents extends BF_Controller {
 			$pwd = isset($par_password) ? $par_password->getValue() : '';
 
 			$this->error = $update_parent->validate();
-
 			if (is_empty($this->error)) {
 				if (!is_empty($pwd))
 					$pwd = password_hash(strtolower(md5($pwd.'129-3026-19-2089')), PASSWORD_DEFAULT);
 				$data = array(
 					'par_fullname' => $par_fullname->getValue(),
-					'par_email' => $par_email->getValue(),
-					'par_cellphone' => $par_cellphone->getValue()
+					'par_email' => $par_email->getValue(true),
+					'par_cellphone' => $par_cellphone->getValue(true)
 				);
 				if (is_empty($par_id_v)) {
 					$data['par_code'] = $this->get_parent_code();
@@ -166,18 +211,20 @@ class Parents extends BF_Controller {
 			$display_parent->close();
 		_td();
 		td(array('align'=>'left', 'valign'=>'top'));
-			table(array('style'=>'border-collapse: collapse; margin-right: 5px;'));
+			table([ 'style'=>'border-collapse: collapse; margin-right: 5px;' ]);
 			tbody();
-			tr();
-			td(array('style'=>'border: 1px solid black; padding: 5px 5px;'));
+			tr(); td([ 'style'=>'border: 1px solid black; padding: 5px 5px;' ]);
 			$update_parent->show();
-			_td();
-			_tr();
-			tr();
-			td();
+			_td(); _tr();
+			tr(); td();
 			$this->print_result();
-			_td();
-			_tr();
+			_td(); _tr();
+			tr(th([ 'style'=>'font-size: 18px; padding: 5px 5px;' ], 'Registrierte Kinder'));
+			tr(); td();
+			$display_kid->open();
+			$parent_kids_table->html();
+			$display_kid->close();
+			_td(); _tr();
 			_tbody();
 			_table();
 		_td();

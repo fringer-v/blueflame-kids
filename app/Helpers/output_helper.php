@@ -220,7 +220,8 @@ class Table {
 		$this->page_url = $page_url;
 		$this->per_page = (integer) $per_page;
 		$this->curr_page = $curr_page;
-		$dummy = $curr_page->getValue(); // Must be of type InputField!
+		if ($curr_page != null)
+			$dummy = $curr_page->getValue(); // Must be of type InputField!
 	}
 	
 	public function setOrderBy($order_by) {
@@ -255,7 +256,9 @@ class Table {
 			$sql .= ' ORDER BY '.$this->order_by;
 
 		if ($this->per_page > 0) {
-			$curr_page = $this->curr_page->getValue();
+			$curr_page = 1;
+			if ($this->curr_page != null)
+				$curr_page = $this->curr_page->getValue();
 			if ($curr_page < 1)
 				$curr_page = 1;
 			$offset = $this->per_page * ($curr_page-1);
@@ -325,7 +328,10 @@ class Table {
 			$max_rows = (integer) db_1_value('SELECT FOUND_ROWS()');
 			$max_page = (integer) (($max_rows + $this->per_page - 1) / $this->per_page);
 
-			$curr_page = $this->curr_page->getValue();
+			if ($this->curr_page == null)
+				$curr_page = 1;
+			else
+				$curr_page = $this->curr_page->getValue();
 			if ($curr_page < 1) {
 				$curr_page = 1;
 				$this->curr_page->setValue($curr_page);
@@ -388,7 +394,10 @@ class Table {
 
 			$max_page = (integer) (($max_rows + $this->per_page - 1) / $this->per_page);
 
-			$curr_page = $this->curr_page->getValue();
+			if ($this->curr_page == null)
+				$curr_page = 1;
+			else
+				$curr_page = $this->curr_page->getValue();
 			if ($curr_page < 1 || $curr_page > max(1, $max_page)) {
 				$curr_page = 1;
 				$this->curr_page->setValue($curr_page);

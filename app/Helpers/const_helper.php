@@ -105,11 +105,11 @@ define('AGE_LEVEL_1', 1);
 define('AGE_LEVEL_2', 2);
 define('AGE_LEVEL_COUNT', 3);
 
-$GLOBALS['group_colors'] = array(
+$GLOBALS['group_colors'] = [
 	AGE_LEVEL_0 => 'Rot',
 	AGE_LEVEL_1 => 'Blau',	
 	AGE_LEVEL_2 => 'Gelb'	
-);
+];
 
 $GLOBALS['age_level_from'] = array (AGE_LEVEL_0 => 4, AGE_LEVEL_1 => 6, AGE_LEVEL_2 => 9);
 $GLOBALS['age_level_to'] = array (AGE_LEVEL_0 => 5, AGE_LEVEL_1 => 8, AGE_LEVEL_2 => 11);

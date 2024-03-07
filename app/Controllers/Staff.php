@@ -26,6 +26,8 @@ class StaffTable extends Table {
 		switch ($field) {
 			case 'is_present':
 				return [ 'style'=>'text-align: center;' ];
+			case 'button_column':
+				return [ 'style'=>'text-align: center; width: 32px;' ];
 		}
 		return null;
 	}

@@ -5,6 +5,143 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
+class ParticipantTable extends Table {
+	public $hasButton = true;
+
+	private function getOrder($col) {
+		if (str_contains($this->order_by, $col)) {
+			if (str_endswith($this->order_by, ' DESC'))
+				return '&uarr;';
+			return '&darr;';
+		}
+		return '';
+	}
+
+	public function columnTitle($field) {
+		switch ($field) {
+			case 'kid_number':
+				return $this->getOrder('kid_number').'Nr.';
+			case 'kid_fullname':
+				return $this->getOrder('kid_fullname').'Name';
+			case 'kid_birthday':
+				return 'Geburtstag';
+			case 'age':
+				return $this->getOrder('kid_birthday').'Alter';
+			case 'kid_group_number':
+				return 'Gruppe';
+			case 'kid_call_status':
+				return $this->getOrder('kid_registered').'Status';
+			case 'button_column':
+				if ($this->hasButton)
+					return '&nbsp;';
+				break;
+		}
+		return nix();
+	}
+
+	public function columnAttributes($field) {
+		switch ($field) {
+			case 'kid_birthday':
+			case 'age':
+			case 'kid_call_status':
+			case 'kid_group_number':
+				return [ 'style'=>'text-align: center;' ];
+			case 'button_column':
+				if ($this->hasButton)
+					return [ 'style'=>'text-align: center; width: 32px;' ];
+				break;
+		}
+		return null;
+	}
+
+	public function cellValue($field, $row) {
+		$age_level_from = $GLOBALS['age_level_from'];
+		$age_level_to = $GLOBALS['age_level_to'];
+
+		switch ($field) {
+			case 'kid_number':
+			case 'kid_fullname':
+				$value = $row[$field];
+				return $value;
+			case 'kid_birthday':
+				if (empty($row['kid_birthday']))
+					return '';
+				$ts = \DateTime::createFromFormat('Y-m-d', $row['kid_birthday']);
+				return $ts->format('d.m.Y');
+			case 'age':
+				return get_age($row['kid_birthday']);
+			case 'kid_group_number':
+				$age_level = $row['kid_age_level'];
+				$group_nr = $row[$field];
+				if (empty($group_nr))
+					$group_box = div([ 'style'=>'height: 22px; font-size: 16px' ], nbsp());
+				else {
+					$ages = $age_level_from[$age_level].' - '.$age_level_to[$age_level];
+					$group_box = span([ 'class'=>'group-s g-'.$age_level ],
+						span(['class'=>'group-number-s'], $group_nr), " ".$ages);
+				}
+				return $group_box;
+			case 'kid_call_status': {
+				if ($row['kid_registered'] == REG_BEING_FETCHED)
+					return div(array('class'=>'yellow-box in-col'), 'Wird Abg.');
+				if (!is_empty($row['kid_wc_time'])) {
+					$out = div(array('class'=>'white-box in-col'), 'WC '.how_long_ago($row['kid_wc_time']));
+					return $out;
+				}
+				$call_status = $row['kid_call_status'];
+				if (is_empty($call_status))
+					return nbsp();
+				if ($call_status == CALL_CANCELLED)
+					return div(array('class'=>'red-box in-col'), 'Ruf Aufh.');
+				if ($call_status == CALL_COMPLETED)
+					return div(array('class'=>'green-box in-col'), 'Ruf Been.');
+				$tag = 'Ruf';
+				$box = 'blue-box';
+				if (arr_nvl($row, 'kid_call_escalation', 0) > 0) {
+					$tag = 'Esk';
+					$box = 'red-box';
+				}
+				if ($call_status == CALL_CALLED) {
+					$tag = 'Ger';
+					$box = 'green-box';
+				}
+				return div(array('class'=>$box.' in-col'), $tag.' '.how_long_ago($row['kid_call_start_time']));
+			}
+/*
+			case 'kid_registered':
+				if ($row[$field] == REG_YES) {
+					if (is_empty($row['kid_wc_time']))
+						return div(array('class'=>'green-box', 'style'=>'width: 56px; height: 22px;'), 'Ja');
+					$out = div(array('class'=>'white-box', 'style'=>'width: 25px; height: 22px; font-size: 12px;'), 'WC');
+					$out->add(" ");
+					$out->add(div(array('class'=>'green-box', 'style'=>'width: 25px; height: 22px;'), 'Ja'));
+					return $out;
+				}
+				if ($row[$field] == REG_BEING_FETCHED) {
+					return div(array('class'=>'yellow-box', 'style'=>'width: 56px; height: 22px;'), 'Abg.');
+				}
+				return div(array('class'=>'red-box', 'style'=>'width: 56px; height: 22px;'), 'Nein');
+*/
+			case 'button_column':
+				if ($this->hasButton) {
+					return a([ 'class'=>'button-black',
+						'style'=>'display: block; color: white; height: 26px; width: 32px; text-align: center; line-height: 26px; border-radius: 6px;',
+						'onclick'=>'$("#set_kid_id").val('.$row['kid_id'].'); $("#display_kid").submit();' ], out('&rarr;'))->html();
+				}
+				break;
+		}
+		return nix();
+	}
+}
+
+define('MATCH_ALL', 0);
+define('MATCH_DATE', 1);
+define('MATCH_FULL_NAME', 2);
+define('MATCH_GROUP', 3);
+define('MATCH_KID_ID', 4);
+define('MATCH_EMAIL', 5);
+define('MATCH_NUMBER', 6);
+
 class BF_Controller extends BaseController {
 	public $stf_login_id = 0;
 	public $stf_login_name = '';
@@ -171,7 +308,10 @@ class BF_Controller extends BaseController {
 	public function get_parent_code()
 	{
 		do {
-			$code = substr('ABCDEFGHJKLMNPQRSTUVWXYZ', rand(0, 23), 1);
+			// Do not include these bacause ambiguous: I O
+			// Do not inclued these because they are the letters of a group:
+			// B - BLAU, G - GELP, R - ROT
+			$code = substr('ACDEFHJKLMNPQSTUVWXYZ', rand(0, 20), 1);
 			$code .= substr('0123456789', rand(0, 9), 1);
 			$code .= substr('ABCDEFGHJKLMNPQRSTUVWXYZ', rand(0, 23), 1);
 			$code .= substr('0123456789', rand(0, 9), 1);
@@ -372,6 +512,110 @@ class BF_Controller extends BaseController {
 		
 		return '';
 	}
+
+	public function kids_table($kid_filter_v, $order_by = '', $kid_page = null)
+	{
+		$group_colors = $GLOBALS['group_colors'];
+
+		$qtype = MATCH_ALL;
+		if (empty($kid_filter_v)) {
+			$kid_filter_v = '%';
+			$order_by = 'kid_modifytime DESC';
+		}
+		else {
+			$order_by = 'kid_fullname';
+			if (preg_match('/^[0-9]{1,2}\.([0-9]{1,2}(\.[0-9]{0,4})?)?$/', $kid_filter_v)) {
+				$qtype = MATCH_DATE;
+				$args = explode('.', $kid_filter_v);
+				for ($i=sizeof($args)-1; $i>=0; $i--) {
+					if (empty($args[$i]))
+						array_pop($args);
+					else
+						$args[$i] = (integer) $args[$i];
+				}
+			}
+			else if (preg_match('/^[[:alpha:]]+(\ [[:alpha:]]+)+$/', $kid_filter_v)) {
+				$qtype = MATCH_FULL_NAME;
+				$parts = explode(' ', $kid_filter_v);
+				$whole = implode('% ', $parts).'%';
+				$args = [ $whole, $whole ];
+			}
+			else if (preg_match('/^[BGYbgy][0-9]+$/', $kid_filter_v)) {
+				$qtype = MATCH_GROUP;
+			}
+			else if (preg_match('/^[ACDEFHJKLMNPQSTUVWXYZ][0-9]([A-Z][0-9]?)?$/', $kid_filter_v)) {
+				$qtype = MATCH_KID_ID;
+			}
+			else if (str_contains($kid_filter_v, '@')) {
+				$qtype = MATCH_EMAIL;
+			}
+			else if (is_numeric($kid_filter_v)) {
+				$qtype = MATCH_NUMBER;
+			}
+			else
+				$kid_filter_v = '%'.$kid_filter_v.'%';
+		}
+
+		$sql = 'SELECT SQL_CALC_FOUND_ROWS kid_id, kid_number, kid_fullname, kid_call_escalation,
+			kid_birthday, "age", kid_age_level, kid_group_number, kid_call_status, kid_registered, kid_wc_time, "button_column",
+			IF(kid_call_status = '.CALL_PENDING.' OR kid_call_status = '.CALL_CALLED.', 0, 1) calling, kid_call_start_time
+			FROM bf_kids LEFT OUTER JOIN bf_parents ON kid_parent_id = par_id WHERE ';
+		if ($qtype == MATCH_DATE) {
+			// Date
+			$sql .= 'DAY(kid_birthday) = ? ';
+			if (count($args) > 1)
+				$sql .= 'AND MONTH(kid_birthday) = ? ';
+			if (count($args) > 2) {
+				if ((integer) $args[2])
+					$args[2] = 2000 + (integer) $args[2];
+				$sql .= 'AND YEAR(kid_birthday) = ? ';
+			}
+		}
+		else if ($qtype == MATCH_FULL_NAME) {
+			// First_Last
+			$sql .= '(kid_fullname LIKE ? OR par_fullname LIKE ?)';
+		}
+		else if ($qtype == MATCH_GROUP) {
+			// Search group:
+			$age_str = strtoupper(substr($kid_filter_v, 0, 1));
+			$num_str = strtoupper(substr($kid_filter_v, 1));
+			$a = -1;
+			foreach ($group_colors as $age=>$color) {
+				if ($age_str == substr($color, 0, 1)) {
+					$a = $age;
+					break;
+				}
+			}
+			$i = -1;
+			if (is_int_val($num_str))
+				$i = (integer) $num_str;
+			$sql .= 'kid_age_level = ? AND kid_group_number = ?';
+			$args = [ $a, $i ];
+		}
+		else if ($qtype == MATCH_KID_ID) {
+			$sql .= 'par_code LIKE ?';
+			$args = [ $kid_filter_v.'%' ];
+		}
+		else if ($qtype == MATCH_EMAIL) {
+			// Registered with, search parents:
+			$sql .= 'par_email LIKE ?';
+			$args = [ '%'.$kid_filter_v.'%' ];
+		}
+		else if ($qtype == MATCH_NUMBER) {
+			$sql .= '(kid_number LIKE ? OR par_cellphone LIKE ?)';
+			$args = [ kid_filter_v.'%', '%'.$kid_filter_v.'%' ];
+		}
+		else {
+			$sql .= 'CONCAT(kid_fullname, "$", kid_fullname, "$", par_fullname, "$", par_email) LIKE ?';
+			$args = [ '%'.$kid_filter_v.'%' ];
+		}
+
+		$kid_table = new ParticipantTable($sql, $args,
+			array('class'=>'details-table kids-table', 'style'=>'width: 600px;'));
+		$kid_table->setPagination('kids?kid_page=', 20, $kid_page);
+		$kid_table->setOrderBy($order_by);
+		return $kid_table;
+}
 
 	public function cancel_group_leader($stf_id, $remove_presence)
 	{

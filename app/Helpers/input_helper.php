@@ -143,11 +143,9 @@ class Form {
 		$this->buttons = array();
 	}
 
-	public function getLabel($name, $quote = false, $group = '') {
+	public function getLabel($name, $group = '') {
 		$fields = $this->getFields($group);
 		$label = $fields[$name][0];
-		if ($quote)
-			return '"'.$label.'"';
 		return $label;
 	}
 
@@ -395,10 +393,10 @@ class InputField extends BaseOutput {
 		$this->group = $group;
 	}
 
-	public function getLabel($quote = false) {
+	public function getLabel() {
 		if (is_null($this->form))
 			return $this->label;
-		return $this->form->getLabel($this->name, $quote, $this->group);
+		return $this->form->getLabel($this->name, $this->group);
 	}
 
 	public function addAttribute($name, $value = null) {
@@ -448,24 +446,30 @@ class InputField extends BaseOutput {
 		$this->default_value = $value;
 	}
 
-	public function getValue() {
+	public function nullOnEmpty($value, bool $null_on_empty) {
+		if (empty($value) && $null_on_empty)
+			return null;
+		return $value;
+	}
+
+	public function getValue(bool $null_on_empty = false) {
 		if (empty($this->name))
-			return $this->default_value;
+			return $this->nullOnEmpty($this->default_value, $null_on_empty);
 
 		if (isset($_POST[$this->name])) {
 			$value = $_POST[$this->name];
-			return $value;
+			return $this->nullOnEmpty($value, $null_on_empty);
 		}
 
 		if (isset($_GET[$this->name])) {
 			$value = $_GET[$this->name];
-			return $value;
+			return $this->nullOnEmpty($value, $null_on_empty);
 		}
 
 		if (isset($_SESSION[$this->name]))
-			return $_SESSION[$this->name];
+			return $this->nullOnEmpty($_SESSION[$this->name], $null_on_empty);
 
-		return $this->default_value;
+		return $this->nullOnEmpty($this->default_value, $null_on_empty);
 	}
 
 	public function isEmpty() {
@@ -511,29 +515,29 @@ class InputField extends BaseOutput {
 				continue;
 			if (str_startswith($rule, 'required')) {
 				if (empty($value))
-					$error = $this->getLabel(true).' muss angegeben werden';
+					$error = $this->getLabel().' muss angegeben werden';
 			}
 			else if (str_startswith($rule, 'is_number')) {
 				if (!is_numeric($value) || ((integer) $value) <= 0)
-					$error = $this->getLabel(true).' muss eine Zahl sein';
+					$error = $this->getLabel().' muss eine Zahl sein';
 			}
 			else if (str_startswith($rule, 'is_valid_date')) {
 				if (!empty($value)) {
 					if (date_create_from_format('d.m.Y', $value) === false)
-						$error = $this->getLabel(true).' ist kein gültiges Datum';
+						$error = $this->getLabel().' ist kein gültiges Datum';
 				}
 			}
 			else if (str_startswith($rule, 'maxlength')) {
 				$arg = str_left(str_right($rule, '['), ']');
 				if (strlen($value) > $arg)
-					$error = $this->getLabel(true)." darf nicht länger als $arg Zeichen sein";
+					$error = $this->getLabel()." darf nicht länger als $arg Zeichen sein";
 			}
 			else if (str_startswith($rule, 'is_email')) {
-				if (!filter_var($value, FILTER_VALIDATE_EMAIL))
+				if (!empty($value) && !filter_var($value, FILTER_VALIDATE_EMAIL))
 					$error = '"'.$value.'" ist keine gültige E-Mail Adresse';
 			}
 			else if (str_startswith($rule, 'is_phone')) {
-				if (!preg_match('/^[\+]?[0-9\s]*$/', $value))
+				if (!empty($value) && !preg_match('/^[\+]?[0-9\s]+$/', $value))
 					$error = '"'.$value.'" ist keine gültige Rufnummer';
 			}
 			else if (str_startswith($rule, 'is_unique')) {
@@ -549,7 +553,7 @@ class InputField extends BaseOutput {
 				if (!empty($id) && empty($form)) {
 					$error = 'Rule: "'.$rule.'" requires a form to be specified';
 				}
-				else {
+				else if (!empty($value)) {
 					$sql = 'SELECT COUNT(*) AS count FROM '.$table.' WHERE '.$column.' = ?';
 					$values = [ $value ];
 					if (!empty($id)) {
@@ -560,7 +564,7 @@ class InputField extends BaseOutput {
 					$query = $db->query($sql, $values);
 					$row = $query->getRowArray()['count'];
 					if ($row != 0)
-						$error = $this->getLabel(true).' ist bereits in Verwendung';
+						$error = $this->getLabel().' ist bereits in Verwendung';
 				}
 			}
 			else if (str_startswith($rule, 'matches')) {
@@ -570,7 +574,7 @@ class InputField extends BaseOutput {
 				else {
 					$arg = str_left(str_right($rule, '['), ']');
 					if ($value != $form->getField($arg)->getValue())
-						$error = $this->getLabel(true).' ist nicht gleich '.$form->getLabel($arg, true);
+						$error = $this->getLabel().' ist nicht gleich '.$form->getLabel($arg);
 				}
 			}
 
