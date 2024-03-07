@@ -470,7 +470,6 @@ class Groups extends BF_Controller {
 		if ($current_period == $p) {
 			out('
 				function poll_group_data() {
-				console.log("poll!");
 					$.getScript("groups/pollgroupdata");
 				}
 			');

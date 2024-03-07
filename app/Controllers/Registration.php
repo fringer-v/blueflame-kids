@@ -51,13 +51,13 @@ class Registration extends BF_Controller {
 		}
 
 		$reg_part = in('reg_part', 1);
-		$reg_part->persistent();
+		$reg_part->persistent('staff');
 
 		$reg_kids = in('reg_kids', [ ]);
-		$reg_kids->persistent();
+		$reg_kids->persistent('staff');
 
 		$reg_supervision = in('reg_supervision', [ ]);
-		$reg_supervision->persistent();
+		$reg_supervision->persistent('staff');
 
 		$reg_top_form->open();
 		table([ 'style'=>'width: 100%;' ]);
@@ -238,13 +238,13 @@ class Registration extends BF_Controller {
 		$this->header('iPad Registrierung', false);
 		
 		$reg_part = in('reg_part', 1);
-		$reg_part->persistent();
+		$reg_part->persistent('staff');
 
 		$reg_kids = in('reg_kids', [ ]);
-		$reg_kids->persistent();
+		$reg_kids->persistent('staff');
 
 		$reg_supervision = in('reg_supervision', [ ]);
-		$reg_supervision->persistent();
+		$reg_supervision->persistent('staff');
 
 		$kid_empty_row = [ 'kid_id'=>0, 'kid_fullname'=>'', 'kid_birthday'=>'', 'kid_notes'=>'' ];
 

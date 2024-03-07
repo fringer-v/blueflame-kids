@@ -138,6 +138,15 @@ class Output extends BaseOutput {
 	}
 }
 
+function clear_persistent_values($prefix)
+{
+	foreach($_SESSION as $key => $value) {
+		if (str_startswith($key, $prefix.'.')) {
+			unset($_SESSION[$key ]);
+		}	
+	}
+}
+
 /*
  * note that $format should always be a hardcoded, static string
  * usage: 
@@ -147,12 +156,15 @@ function out($format) {
 	return new Output($format, array_slice(func_get_args(), 1));
 }
 
-function print_message_box($msg, $class) {
+function print_message_box($msg, $class, $attr = null) {
 	if (gettype($msg) == "string")
 		$msg = explode("\n", $msg);
 
 	if (gettype($msg) == "array") {
-		$out = div(array('class'=>'message-box '.$class));
+		if (empty($attr))
+			$attr = [ ];
+		$attr['class'] = 'message-box '.$class;
+		$out = div($attr);
 		$i = 0;
 		foreach ($msg as $m) {
 			if ($i != 0)
@@ -167,20 +179,20 @@ function print_message_box($msg, $class) {
 	return $out;
 }
 
-function print_error($message) {
-	return print_message_box($message, "error-box");
+function print_error($message, $attr = null) {
+	return print_message_box($message, "error-box", $attr);
 }
 
-function print_warning($message) {
-	return print_message_box($message, "warning-box");
+function print_warning($message, $attr = null) {
+	return print_message_box($message, "warning-box", $attr);
 }
 
-function print_success($message) {
-	return print_message_box($message, "success-box");
+function print_success($message, $attr = null) {
+	return print_message_box($message, "success-box", $attr);
 }
 
-function print_info($message) {
-	return print_message_box($message, "info-box");
+function print_info($message, $attr = null) {
+	return print_message_box($message, "info-box", $attr);
 }
 
 class Nix {
@@ -458,7 +470,8 @@ class AsyncLoader {
 			$out->add(out('[](); ', $this->id)); // Call the function for the first time!
 		}
 		else {
-			$out->add(out('function []() {', $this->id));
+			$out->add(out('function [](ev = null) {', $this->id));
+			$out->add(out('if (ev != null && ev.key.length != 1) return;'));
 			$out->add(out('loadPage("[]", "[]"', $this->id, $this->page));
 			foreach ($this->params as $param) {
 				$out->add(out(', "[]"', $param));
@@ -468,7 +481,7 @@ class AsyncLoader {
 
 			// Create triggers for parameters:
 			foreach ($this->params as $param) {
-				$out->add(out('$("#[]").keyup([]); ', $param, $this->id));
+				$out->add(out('$("#[]").on("keyup", function(event) { [](event); });', $param, $this->id));
 			}
 		}
 

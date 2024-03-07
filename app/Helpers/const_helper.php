@@ -113,3 +113,11 @@ $GLOBALS['group_colors'] = [
 
 $GLOBALS['age_level_from'] = array (AGE_LEVEL_0 => 4, AGE_LEVEL_1 => 6, AGE_LEVEL_2 => 9);
 $GLOBALS['age_level_to'] = array (AGE_LEVEL_0 => 5, AGE_LEVEL_1 => 8, AGE_LEVEL_2 => 11);
+
+define('MATCH_ALL', 0);
+define('MATCH_DATE', 1);
+define('MATCH_FULL_NAME', 2);
+define('MATCH_GROUP', 3);
+define('MATCH_KID_ID', 4);
+define('MATCH_EMAIL', 5);
+define('MATCH_NUMBER', 6);

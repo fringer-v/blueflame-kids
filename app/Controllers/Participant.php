@@ -136,14 +136,14 @@ class Participant extends BF_Controller {
 		$read_only = !is_empty($this->session->stf_login_tech);
 
 		$kid_page = in('kid_page', 1);
-		$kid_page->persistent();
+		$kid_page->persistent('staff');
 		$hst_page = in('hst_page', 1);
-		$hst_page->persistent();
+		$hst_page->persistent('staff');
 
 		$display_kid = new Form('display_kid', 'kids', 1, [ 'class'=>'input-table' ]);
 		$set_kid_id = $display_kid->addHidden('set_kid_id');
 		$kid_filter = $display_kid->addTextInput('kid_filter', '', '', [ 'placeholder'=>'Suchfilter' ]);
-		$kid_filter->persistent();
+		$kid_filter->persistent('staff');
 		$clear_filter = $display_kid->addSubmit('clear_filter', 'X',
 			[ 'class'=>'button-black', 'onclick'=>'$("#kid_filter").val(""); kids_list(); return false;' ]);
 		list($current_period, $nr_of_groups, $group_limits) = $this->get_group_data(-1);
@@ -160,7 +160,7 @@ class Participant extends BF_Controller {
 		if ($read_only)
 			$update_kid->disable();
 		$kid_id = $update_kid->addHidden('kid_id');
-		$kid_id->persistent();
+		$kid_id->persistent('staff');
 		$kid_id_v = $kid_id->getValue();
 
 		if ($set_kid_id->submitted()) {
@@ -697,7 +697,7 @@ class Participant extends BF_Controller {
 		$kids_list_loader = new AsyncLoader('kids_list', 'kids/getkids', [ 'kid_filter' ]);
 
 		$kid_tab = in('kid_tab', 'register');
-		$kid_tab->persistent();
+		$kid_tab->persistent('staff');
 
 		// Generate page ------------------------------------------
 		$this->header('Kinder');
@@ -876,11 +876,11 @@ class Participant extends BF_Controller {
 		$builder->update([ 'kid_call_status'=>CALL_NOCALL ]);
 
 		$kid_filter = in('kid_filter');
-		$kid_filter->persistent();
+		$kid_filter->persistent('staff');
 		$kid_page = in('kid_page', 1);
-		$kid_page->persistent();
+		$kid_page->persistent('staff');
 		$kid_tab = in('kid_tab', 'modify');
-		$kid_tab->persistent();
+		$kid_tab->persistent('staff');
 		
 		$kid_filter_v = trim($kid_filter->getValue());
 		$order_by = '';
@@ -951,7 +951,7 @@ class Participant extends BF_Controller {
 		}
 
 		$kid_id = in('kid_id');
-		$kid_id->persistent();
+		$kid_id->persistent('staff');
 		$kid_id_v = $kid_id->getValue();
 
 		$tab = in('tab');
@@ -1049,10 +1049,10 @@ class Participant extends BF_Controller {
 			return '';
 
 		$kid_id = in('kid_id');
-		$kid_id->persistent();
+		$kid_id->persistent('staff');
 		$kid_id_v = $kid_id->getValue();
 		$hst_page = in('hst_page', 1);
-		$hst_page->persistent();
+		$hst_page->persistent('staff');
 
 		$history_table = new HistoryTable('SELECT SQL_CALC_FOUND_ROWS hst_action, hst_timestamp,
 			stf_username, hst_escalation, hst_age_level, hst_group_number, hst_notes
@@ -1074,7 +1074,7 @@ class Participant extends BF_Controller {
 			return '';
 
 		$kid_id = in('kid_id');
-		$kid_id->persistent();
+		$kid_id->persistent('staff');
 		$kid_id_v = $kid_id->getValue();
 
 		$tab = in('tab');

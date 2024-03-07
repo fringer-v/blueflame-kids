@@ -139,24 +139,24 @@ class Staff extends BF_Controller {
 		$display_staff = new Form('display_staff', 'staff', 1, array('class'=>'input-table'));
 		$set_stf_id = $display_staff->addHidden('set_stf_id');
 		$stf_filter = $display_staff->addTextInput('stf_filter', '', '', [ 'placeholder'=>'Suchfilter', 'style'=>'width: 110px;' ]);
-		$stf_filter->persistent();
+		$stf_filter->persistent('staff');
 		$stf_page = in('stf_page', 1);
-		$stf_page->persistent();
+		$stf_page->persistent('staff');
 		$clear_filter = $display_staff->addSubmit('clear_filter', 'X',
 			[ 'class'=>'button-black', 'onclick'=>'$("#stf_filter").val(""); staff_list(); return false;' ]);
 		$stf_select_role = $display_staff->addSelect('stf_select_role', '', $extended_roles, 0, [ 'onchange'=>'staff_list(); return false;' ]);
-		$stf_select_role->persistent();
+		$stf_select_role->persistent('staff');
 		$stf_select_period = $display_staff->addSelect('stf_select_period', '', [ -1 => '']  + $period_names, -1, [ 'onchange'=>'staff_list(); return false;' ]);
-		$stf_select_period->persistent();
+		$stf_select_period->persistent('staff');
 		$filter_options = [ 0=>'', 1=>'Anwesend', 2=>'Angemeldet', 3=>'Abwesend' ];
 		$stf_presence = $display_staff->addSelect('stf_presence', '', $filter_options, 0, [ 'onchange'=>'staff_list(); return false;' ]);
-		$stf_presence->persistent();
+		$stf_presence->persistent('staff');
 
 		$update_staff = new Form('update_staff', 'staff', 2, array('class'=>'input-table'));
 		if ($read_only)
 			$update_staff->disable();
 		$stf_id = $update_staff->addHidden('stf_id');
-		$stf_id->persistent();
+		$stf_id->persistent('staff');
 
 		if ($set_stf_id->submitted()) {
 			$stf_id->setValue($set_stf_id->getValue());
@@ -484,16 +484,16 @@ class Staff extends BF_Controller {
 			return '';
 
 		$stf_page = in('stf_page', 1);
-		$stf_page->persistent();
+		$stf_page->persistent('staff');
 		$stf_filter = in('stf_filter', '');
-		$stf_filter->persistent();
+		$stf_filter->persistent('staff');
 		$stf_filter_v = trim($stf_filter->getValue());
 		$stf_select_role = in('stf_select_role', '');
-		$stf_select_role->persistent();
+		$stf_select_role->persistent('staff');
 		$stf_select_period = in('stf_select_period', '');
-		$stf_select_period->persistent();
+		$stf_select_period->persistent('staff');
 		$stf_presence = in('stf_presence', 0);
-		$stf_presence->persistent();
+		$stf_presence->persistent('staff');
 
 		$where = '';
 		if ($stf_select_period->getValue() == -1) {

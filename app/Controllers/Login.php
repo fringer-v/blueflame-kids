@@ -27,17 +27,9 @@ class Login extends BF_Controller {
 		$stf_md5_pwd->setRule('required');
 
 		$logout_action = in('action');
-		if ($logout_action->getValue() == "logout") {
-			if ($this->session->has('stf_login_id') && $this->session->stf_login_id > 0) {
-				$builder = $this->db->table('bf_staff');
-				$builder->set('stf_registered', 0);
-				$builder->set('stf_reserved_age_level', null);
-				$builder->set('stf_reserved_group_number', null);
-				$builder->set('stf_reserved_count', 0);
-				$builder->where('stf_id', $this->session->stf_login_id);
-				$builder->update();
-			}
-			$this->session->destroy();
+		if ($logout_action->getValue() == 'logout') {
+			$this->set_staff_logged_out();
+			return redirect("admin-login");
 		}
 
 		if ($login->submitted()) {

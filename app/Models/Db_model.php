@@ -15,7 +15,8 @@ use CodeIgniter\Model;
 // 45 - Added kid_reg_num, change kid_parent_firstname(50->120)
 // 46 - Added change kid_parent_lastname(->120), kid_parent_cellphone(->120)
 // 47 - kid_registered DEFAULT set to 0 (REG_NO)
-define("DB_VERSION", 48);
+// 48 - fixed session table schema
+define("DB_VERSION", 49);
 
 class Db_model extends Model {
 	private $settings = array();
@@ -82,12 +83,13 @@ class Db_model extends Model {
 
 	public function update_database() {
 		$fields = array(
-			'id'=>array('type'=>'VARCHAR', 'constraint'=>'128'),
-			'ip_address'=>array('type'=>'VARCHAR', 'constraint'=>'45'),
-			'timestamp'=>array('type'=>'INTEGER', 'unsigned'=>true, 'default'=>0),
-			'data'=>array('type'=>'BLOB')
+			'`id` VARCHAR(128) NOT NULL PRIMARY KEY',
+			'`ip_address` VARCHAR(45) NOT null',
+			'`timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL',
+			'`data` BLOB NOT NULL',
+			'KEY `bf_sessions_timestamp` (`timestamp`)'
 		);
-		$this->create_or_update_table('bf_sessions', $fields, array('timestamp'));
+		$this->create_or_update_table('bf_sessions', $fields);
 
 		$fields = array(
 			'stn_name VARCHAR(40) NOT NULL PRIMARY KEY',

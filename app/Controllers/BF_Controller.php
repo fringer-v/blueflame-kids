@@ -134,14 +134,6 @@ class ParticipantTable extends Table {
 	}
 }
 
-define('MATCH_ALL', 0);
-define('MATCH_DATE', 1);
-define('MATCH_FULL_NAME', 2);
-define('MATCH_GROUP', 3);
-define('MATCH_KID_ID', 4);
-define('MATCH_EMAIL', 5);
-define('MATCH_NUMBER', 6);
-
 class BF_Controller extends BaseController {
 	public $stf_login_id = 0;
 	public $stf_login_name = '';
@@ -606,7 +598,7 @@ class BF_Controller extends BaseController {
 			$args = [ kid_filter_v.'%', '%'.$kid_filter_v.'%' ];
 		}
 		else {
-			$sql .= 'CONCAT(kid_fullname, "$", kid_fullname, "$", par_fullname, "$", par_email) LIKE ?';
+			$sql .= 'CONCAT(kid_fullname, "|", kid_fullname, "|", par_fullname, "|", par_email) LIKE ?';
 			$args = [ '%'.$kid_filter_v.'%' ];
 		}
 
@@ -708,21 +700,31 @@ class BF_Controller extends BaseController {
 			$page = str_right($page, "index.php/");
 		$page = str_left($page, "/");
 
-		if (!$this->session->has('ses_prev_page'))
-			$this->session->set('ses_prev_page', $page);
-		if (!$this->session->has('ses_curr_page') || $this->session->ses_curr_page != $page) {
-			$this->session->set('ses_prev_page', $this->session->ses_curr_page);
-			$this->session->set('ses_curr_page', $page);
+		if ($as == 'staff') {
+			$ses_curr_page = in('ses_curr_page', '');
+			$ses_curr_page->persistent('staff');
+			$ses_prev_page = in('ses_prev_page', '');
+			$ses_prev_page->persistent('staff');
+			
+			if ($ses_prev_page->isEmpty())
+				$ses_prev_page->setValue($page);
+			if ($ses_curr_page->isEmpty() || $ses_curr_page->getValue() != $page) {
+				$ses_prev_page->setValue($ses_curr_page->getValue());
+				$ses_curr_page->setValue($page);
+			}
 		}
 
 		$this->stf_login_id = 0;
-		$this->stf_login_name = 0;
-		$this->par_login_id = 0;
-		$this->par_login_code = '';
+		$this->stf_login_name = '';
+		$this->stf_login_tech = false;
 		if ($this->session->has('stf_login_id') && $this->session->stf_login_id > 0) {
 			$this->stf_login_id = $this->session->stf_login_id;
 			$this->stf_login_name = $this->session->stf_login_name;
+			$this->stf_login_tech = $this->session->stf_login_tech;
 		}
+
+		$this->par_login_id = 0;
+		$this->par_login_code = '';
 		if ($this->session->has('par_login_id') && $this->session->par_login_id > 0) {
 			$this->par_login_id = $this->session->par_login_id;
 			$this->par_login_code = $this->session->par_login_code;
@@ -747,6 +749,27 @@ class BF_Controller extends BaseController {
 		$this->stf_login_tech = $this->session->stf_login_tech;
 	}
 
+	public function set_staff_logged_out() {
+		if ($this->session->has('stf_login_id') && $this->session->stf_login_id > 0) {
+			$builder = $this->db->table('bf_staff');
+			$builder->set('stf_registered', 0);
+			$builder->set('stf_reserved_age_level', null);
+			$builder->set('stf_reserved_group_number', null);
+			$builder->set('stf_reserved_count', 0);
+			$builder->where('stf_id', $this->session->stf_login_id);
+			$builder->update();
+		}
+		$this->session->set('stf_login_id', 0);
+		$this->session->set('stf_login_name', '');
+		$this->session->set('stf_login_tech', false);
+		$this->stf_login_id = 0;
+		$this->stf_login_name = '';
+		$this->stf_login_tech = false;
+
+		$this->session->set('bf_success', '');
+		clear_persistent_values('staff');
+	}
+
 	public function set_parent_logged_in($parent_row) {
 		$this->session->set('par_login_id', $parent_row['par_id']);
 		$this->session->set('par_login_code', $parent_row['par_code']);
@@ -759,6 +782,9 @@ class BF_Controller extends BaseController {
 		$this->session->set('par_login_code', '');
 		$this->par_login_id = 0;
 		$this->par_login_code = '';
+
+		$this->session->set('bf_success', '');
+		clear_persistent_values('parent');
 	}
 
 	public function authorize_staff() {
@@ -801,8 +827,7 @@ class BF_Controller extends BaseController {
 		$this->head($title);
 		$body_attr = [ ];
 		$table_attr = [ 'style'=>'width: 100%; border-collapse: collapse; border: 0px;' ];
-		if ($this->session != null &&
-			($this->session->ses_curr_page == 'login' || $this->session->ses_curr_page == 'registration')) {
+		if ($title == 'Anmeldung') {
 			$body_attr = [ 'style'=>'background-color: #D9E3E8;' ]; // A9C2D6 ECECEC
 			$table_attr['class'] = 'registration-body';
 		}
@@ -893,13 +918,15 @@ class BF_Controller extends BaseController {
 			!empty($this->session->bf_success);
 	}
 
-	public function print_result() {
+	public function print_result($attr = null) {
 		if (!empty($this->error))
-			print_error($this->error);
+			print_error($this->error, $attr);
 		if (!empty($this->warning))
-			print_warning($this->warning);
+			print_warning($this->warning, $attr);
 		if (!empty($this->session->bf_success)) {
-			print_success($this->session->bf_success);
+			if (empty($this->error))
+				// Only print success if we do not have an error!
+				print_success($this->session->bf_success, $attr);
 			// Only display this feedback once:
 			$this->session->set('bf_success', '');
 		}

@@ -99,9 +99,9 @@ class Parents extends BF_Controller {
 		$display_parent = new Form('display_parent', 'parents', 1, array('class'=>'input-table'));
 		$set_par_id = $display_parent->addHidden('set_par_id');
 		$par_filter = $display_parent->addTextInput('par_filter', '', '', [ 'placeholder'=>'Suchfilter', 'style'=>'width: 280px;' ]);
-		$par_filter->persistent();
+		$par_filter->persistent('staff');
 		$par_page = in('par_page', 1);
-		$par_page->persistent();
+		$par_page->persistent('staff');
 		$clear_filter = $display_parent->addSubmit('clear_filter', 'X',
 			[ 'class'=>'button-black', 'onclick'=>'$("#par_filter").val(""); parent_list(); return false;' ]);
 
@@ -109,7 +109,7 @@ class Parents extends BF_Controller {
 		if ($read_only)
 			$update_parent->disable();
 		$par_id = $update_parent->addHidden('par_id');
-		$par_id->persistent();
+		$par_id->persistent('staff');
 
 		if ($set_par_id->submitted()) {
 			$par_id->setValue($set_par_id->getValue());
@@ -240,19 +240,53 @@ class Parents extends BF_Controller {
 			return '';
 
 		$par_page = in('par_page', 1);
-		$par_page->persistent();
+		$par_page->persistent('staff');
 		$par_filter = in('par_filter', '');
-		$par_filter->persistent();
+		$par_filter->persistent('staff');
 		$par_filter_v = trim($par_filter->getValue());
 
 		$sql = 'SELECT SQL_CALC_FOUND_ROWS par_code, par_fullname, par_email, "button_column", par_id, par_cellphone, par_password ';
-		$sql .= 'FROM bf_parents';
+		$sql .= 'FROM bf_parents WHERE ';
 
-		if (!empty($par_filter_v)) {
-			$sql .= ' WHERE CONCAT(par_code, "|", par_fullname, "|", par_email) LIKE "%'.db_escape($par_filter_v).'%" ';
+		$qtype = MATCH_ALL;
+		$args = [ ];
+		if (empty($par_filter_v)) {
+			$par_filter_v = '%';
+		}
+		else if (preg_match('/^[[:alpha:]]+(\s+[[:alpha:]]+)+$/', $par_filter_v)) {
+			$qtype = MATCH_FULL_NAME;
+			$parts = explode(' ', $par_filter_v);
+			$parts = array_filter($parts, 'strlen'); // removes the empty entries in the array
+			$args = [ implode('% ', $parts).'%' ];
+		}
+		else if (preg_match('/^[ACDEFHJKLMNPQSTUVWXYZ][0-9]([A-Z][0-9]?)?$/', $par_filter_v)) {
+			$qtype = MATCH_KID_ID;
+		}
+		else if (str_contains($par_filter_v, '@')) {
+			$qtype = MATCH_EMAIL;
+		}
+		else
+			$par_filter_v = '%'.$par_filter_v.'%';
+
+		if ($qtype == MATCH_FULL_NAME) {
+			// First_Last
+			$sql .= 'par_fullname LIKE ?';
+		}
+		else if ($qtype == MATCH_KID_ID) {
+			$sql .= 'par_code LIKE ?';
+			$args = [ $par_filter_v.'%' ];
+		}
+		else if ($qtype == MATCH_EMAIL) {
+			// Registered with, search parents:
+			$sql .= 'par_email LIKE ?';
+			$args = [ '%'.$par_filter_v.'%' ];
+		}
+		else {
+			$sql .= 'CONCAT(par_fullname, "|", par_email) LIKE ?';
+			$args = [ '%'.$par_filter_v.'%' ];
 		}
 
-		$parent_list = new ParentTable($sql, [], [ 'class'=>'details-table no-wrap-table', 'style'=>'width: 600px;' ]);
+		$parent_list = new ParentTable($sql, $args, [ 'class'=>'details-table no-wrap-table', 'style'=>'width: 600px;' ]);
 		$parent_list->setPagination('parents?par_page=', 21, $par_page);
 		$parent_list->setOrderBy('par_fullname');
 

@@ -15,6 +15,7 @@ class Form {
 	private $buttons = array();	
 	private $groups = array();	
 	private $openned = false;
+	private $persistent = '';
 
 	public function __construct($id, $action = '', $columns = 1, $attributes = array()) {
 		$this->id = $id;
@@ -440,8 +441,8 @@ class InputField extends BaseOutput {
 				unset($_POST[$this->name]);
 			if (isset($_GET[$this->name]))
 				unset($_GET[$this->name]);
-			if (isset($_SESSION[$this->name]))
-				$_SESSION[$this->name] = $value;
+			if (!empty($this->persistent))
+				$_SESSION[$this->persistent.'.'.$this->name] = $value;
 		}
 		$this->default_value = $value;
 	}
@@ -466,8 +467,8 @@ class InputField extends BaseOutput {
 			return $this->nullOnEmpty($value, $null_on_empty);
 		}
 
-		if (isset($_SESSION[$this->name]))
-			return $this->nullOnEmpty($_SESSION[$this->name], $null_on_empty);
+		if (!empty($this->persistent) && isset($_SESSION[$this->name]))
+			return $this->nullOnEmpty($_SESSION[$this->persistent.'.'.$this->name], $null_on_empty);
 
 		return $this->nullOnEmpty($this->default_value, $null_on_empty);
 	}
@@ -498,10 +499,11 @@ class InputField extends BaseOutput {
 		$this->format = $format;
 	}
 
-	public function persistent() {
+	public function persistent($prefix) {
+		$this->persistent = $prefix;
 		if (!empty($this->name)) {
 			$value = $this->getValue();
-			$_SESSION[$this->name] = $value;
+			$_SESSION[$this->persistent.'.'.$this->name] = $value;
 		}
 	}
 
