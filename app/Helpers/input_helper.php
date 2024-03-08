@@ -467,7 +467,7 @@ class InputField extends BaseOutput {
 			return $this->nullOnEmpty($value, $null_on_empty);
 		}
 
-		if (!empty($this->persistent) && isset($_SESSION[$this->name]))
+		if (!empty($this->persistent) && isset($_SESSION[$this->persistent.'.'.$this->name]))
 			return $this->nullOnEmpty($_SESSION[$this->persistent.'.'.$this->name], $null_on_empty);
 
 		return $this->nullOnEmpty($this->default_value, $null_on_empty);

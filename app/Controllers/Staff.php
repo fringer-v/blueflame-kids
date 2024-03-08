@@ -127,7 +127,7 @@ class Staff extends BF_Controller {
 		$all_roles = $GLOBALS['all_roles'];
 		$extended_roles = $GLOBALS['extended_roles'];
 		$period_names = $GLOBALS['period_names'];
-		
+	
 		if (!$this->authorize_staff())
 			return '';
 
@@ -353,6 +353,7 @@ class Staff extends BF_Controller {
 				if (is_empty($stf_id_v)) {
 					$data['stf_password'] = $pwd;
 					$builder = $this->db->table('bf_staff');
+					$builder->set('stf_modifytime', 'NOW()', false);
 					$builder->insert($data);
 					$stf_id_v = $this->db->insertID();
 					$stf_id->setValue($stf_id_v);
@@ -363,6 +364,7 @@ class Staff extends BF_Controller {
 						$data['stf_password'] = $pwd;
 
 					$builder = $this->db->table('bf_staff');
+					$builder->set('stf_modifytime', 'NOW()', false);
 					$builder->where('stf_id', $stf_id_v);
 					$builder->update($data);
 
@@ -419,6 +421,7 @@ class Staff extends BF_Controller {
 				$builder->set('stf_reserved_group_number', null);
 				$builder->set('stf_reserved_count', 0);
 			}
+			$builder->set('stf_modifytime', 'NOW()', false); // last paremeter $escape
 			$builder->where('stf_id', $stf_id_v);
 			$builder->update();
 

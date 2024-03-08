@@ -15,8 +15,8 @@ $routes->get('calllist', 'Calllist::index');
 $routes->post('calllist', 'Calllist::index');
 $routes->post('calllist/getcalls', 'Calllist::getcalls');
 
-$routes->get('database', 'Database::index');
-$routes->post('database', 'Database::index');
+$routes->get('$db-check', 'Database::index');
+$routes->post('$db-check', 'Database::index');
 
 $routes->get('groups', 'Groups::index');
 $routes->post('groups', 'Groups::index');

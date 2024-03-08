@@ -140,6 +140,7 @@ class Checkin extends BF_Controller {
 				$parent['par_fullname'] = $par_fullname->getValue();
 				$parent['par_cellphone'] = $par_cellphone->getValue();
 				$builder = $this->db->table('bf_parents');
+				$builder->set('par_modifytime', 'NOW()', false);
 				$builder->insert($parent);
 
 				$this->send_email($par_email->getValue(), "[BlueFlame Kids] Willkommen bei der BlueFlame Kids Anmeldung",
@@ -408,6 +409,7 @@ class Checkin extends BF_Controller {
 					'par_cellphone' => $par_cellphone->getValue()
 				);
 				$builder = $this->db->table('bf_parents');
+				$builder->set('par_modifytime', 'NOW()', false);
 				$builder->where('par_id', $this->par_login_id);
 				$builder->update($data);
 				$this->set_success($par_fullname->getValue().' geändert');

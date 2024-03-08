@@ -169,6 +169,7 @@ class Parents extends BF_Controller {
 					$data['par_code'] = $this->get_parent_code();
 					$data['par_password'] = $pwd;
 					$builder = $this->db->table('bf_parents');
+					$builder->set('par_modifytime', 'NOW()', false);
 					$builder->insert($data);
 					$par_id_v = $this->db->insertID();
 					$par_id->setValue($par_id_v);
@@ -179,6 +180,7 @@ class Parents extends BF_Controller {
 						$data['par_password'] = $pwd;
 
 					$builder = $this->db->table('bf_parents');
+					$builder->set('par_modifytime', 'NOW()', false);
 					$builder->where('par_id', $par_id_v);
 					$builder->update($data);
 

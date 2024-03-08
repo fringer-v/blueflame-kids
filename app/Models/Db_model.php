@@ -16,6 +16,7 @@ use CodeIgniter\Model;
 // 46 - Added change kid_parent_lastname(->120), kid_parent_cellphone(->120)
 // 47 - kid_registered DEFAULT set to 0 (REG_NO)
 // 48 - fixed session table schema
+// 49 - Added create and modify times to Staff and Parent tables
 define("DB_VERSION", 49);
 
 class Db_model extends Model {
@@ -113,6 +114,8 @@ class Db_model extends Model {
 			'stf_reserved_age_level'=>array('type'=>'SMALLINT', 'unsigned'=>true, 'null'=>true),
 			'stf_reserved_group_number'=>array('type'=>'SMALLINT', 'unsigned'=>true, 'null'=>true),
 			'stf_reserved_count'=>array('type'=>'SMALLINT', 'unsigned'=>true, 'null'=>true),
+			'stf_createtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+			'stf_modifytime'=>array('type'=>'DATETIME', 'null'=>true),
 			'INDEX stf_reserved (stf_reserved_age_level, stf_reserved_count)'
 		);
 		$this->create_or_update_table('bf_staff', $fields);
@@ -167,7 +170,9 @@ class Db_model extends Model {
 			'par_email'=>array('type'=>'VARCHAR', 'constraint'=>'200', 'null'=>true, 'unique'=>true),
 			'par_fullname'=>array('type'=>'VARCHAR', 'constraint'=>'200', 'unique'=>true),
 			'par_cellphone'=>array('type'=>'VARCHAR', 'constraint'=>'120', 'null'=>true),
-			'par_password VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL'
+			'par_password VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL',
+			'par_createtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+			'par_modifytime'=>array('type'=>'DATETIME', 'null'=>true)
 		);
 		$this->create_or_update_table('bf_parents', $fields);
 
