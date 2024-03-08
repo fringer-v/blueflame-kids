@@ -19,7 +19,7 @@ class Database extends BF_Controller {
 	{
 		//$this->load->library('session');
 
-		$form = new Form('update_database', 'database', 1);
+		$form = new Form('update_database', 'db~check', 1);
 		$update = $form->addSubmit('submit', 'Update Database', array('class'=>'button-black'));
 
 		if ($update->submitted() && !$this->db_model->up_to_date()) {
