@@ -5,8 +5,11 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-//$routes->get('/', 'Home::index');
-$routes->get('/', 'Login::index');
+$routes->get('/', 'Checkin::registration');
+$routes->get('registration', 'Checkin::registration');
+$routes->post('registration', 'Checkin::registration');
+$routes->get('login', 'Checkin::login');
+$routes->post('login', 'Checkin::login');
 
 $routes->get('settings', 'Admin::index');
 $routes->post('settings', 'Admin::index');
@@ -59,7 +62,3 @@ $routes->post('parents/getparent', 'Parents::getparent');
 
 $routes->get('test', 'Test::index');
 
-$routes->get('registration', 'Checkin::registration');
-$routes->post('registration', 'Checkin::registration');
-$routes->get('login', 'Checkin::login');
-$routes->post('login', 'Checkin::login');

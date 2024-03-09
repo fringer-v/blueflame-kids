@@ -399,6 +399,7 @@ class BF_Controller extends BaseController {
 
 	public function remove_kid($kid_id_v)
 	{
+		//...
 		$builder = $this->db->table('bf_history');
 		$builder->where('hst_kid_id', $kid_id_v);
 		$builder->delete();

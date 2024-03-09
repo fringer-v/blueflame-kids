@@ -18,8 +18,8 @@ class Login extends BF_Controller {
 	public function index()
 	{
 		$login_form = new Form('user_login', url('admin-login'), 1, array('class'=>'input-table'));
-		$stf_username = $login_form->addTextInput('stf_username', 'Username');
-		$stf_password = $login_form->addPassword('stf_password', 'Password');
+		$stf_username = $login_form->addTextInput('stf_username', 'Kurzname');
+		$stf_password = $login_form->addPassword('stf_password', 'Passwort');
 		$stf_md5_pwd = $login_form->addHidden('stf_md5_pwd', 'Password');
 		$login = $login_form->addSubmit('admin-login', 'Login', array('class'=>'button-black'/*, 'onclick'=>'doLogin();'*/));
 
@@ -66,11 +66,8 @@ class Login extends BF_Controller {
 
 		div([ 'class'=>'topnav' ]);
 		table();
-		tr([ 'style'=>'height: 12px;' ]);
-		td(nbsp());
-		_tr();
-		tr(array('style'=>'border-bottom: 1px solid black; padding: 8px 16px;'));
-		td(array('style'=>'width: 3px; padding: 0;'), nbsp());
+		tr([ 'style'=>'border-bottom: 1px solid black;' ]);
+		td([ 'style'=>'padding: 10px; font-size: 28px; color: white;' ], 'Administration');
 		_tr();
 		_table();
 		_div();

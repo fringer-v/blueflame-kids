@@ -445,14 +445,19 @@ class Checkin extends BF_Controller {
 						$this->set_error($err_prefix.'Geburtstagsjahr nicht im gültigen Bereich');
 				}
 			}
-			if (!$this->have_error()) {
-				$kid_present_periods = 0;
-				for ($p=0; $p<PERIOD_COUNT; $p++) {
-					$present = in('present_'.$kid_nr_v.'_'.$p);
-					if ($present->getValue()) {
-						$kid_present_periods = set_bit($kid_present_periods, $p);
-					}
+
+			$kid_present_periods = 0;
+			for ($p=0; $p<PERIOD_COUNT; $p++) {
+				$present = in('present_'.$kid_nr_v.'_'.$p);
+				if ($present->getValue()) {
+					$kid_present_periods = set_bit($kid_present_periods, $p);
 				}
+			}
+			if (!$kid_present_periods && empty($kid_id_v)) {
+				$this->set_error($err_prefix.'Bitte wählen Sie die Zeiträume aus, in denen das Kind anwesend sein wird');
+			}
+
+			if (!$this->have_error()) {
 
 				$after_row = [
 					'kid_fullname' => $kid_fullname->getValue(),
@@ -484,8 +489,10 @@ class Checkin extends BF_Controller {
 		if ($delete_kid->submitted()) {
 			$err_prefix = 'Kind '.$kid_nr_v.': ';
 			$this->remove_kid($kid_id_v);
-			$this->set_success($err_prefix.$kid_fullname->getValue().' abgemeldet');
-			return redirect('registration');
+			if (!$this->have_error()) {
+				$this->set_success($err_prefix.$kid_fullname->getValue().' abgemeldet');
+				return redirect('registration');
+			}
 		}
 
 		$this->header('Anmeldung', false);
@@ -662,7 +669,7 @@ class Checkin extends BF_Controller {
 				'onkeyup'=>'dateChanged($(this)); toggle_submit_kid('.$kid_i.', '.PERIOD_COUNT.');']);
 		$kid_birthday->setFormat(['clear-box'=>true]);
 		$kid_notes = textarea('kid_notes_'.$kid_i, $row['kid_notes'],
-			['style'=>'width: 99%; height: 28px;', 'before'=>$row['kid_notes'],
+			['style'=>'width: 99%; height: '.(empty($row['kid_notes']) ? '28' : '44').'px;', 'before'=>$row['kid_notes'],
 				'onkeyup'=>'toggle_submit_kid('.$kid_i.', '.PERIOD_COUNT.');']);
 
 		$kid_checkin_form->open();

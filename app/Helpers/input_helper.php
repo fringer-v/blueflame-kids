@@ -535,7 +535,8 @@ class InputField extends BaseOutput {
 					$error = $this->getLabel()." darf nicht länger als $arg Zeichen sein";
 			}
 			else if (str_startswith($rule, 'is_email')) {
-				if (!empty($value) && !filter_var($value, FILTER_VALIDATE_EMAIL))
+				//if (!empty($value) && !filter_var($value, FILTER_VALIDATE_EMAIL))
+				if (!empty($value) && !preg_match('/^\S+@\S+$/', $value))
 					$error = '"'.$value.'" ist keine gültige E-Mail Adresse';
 			}
 			else if (str_startswith($rule, 'is_phone')) {
