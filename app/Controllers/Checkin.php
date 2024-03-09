@@ -23,7 +23,7 @@ class Checkin extends BF_Controller {
 
 		$current_period = $this->db_model->get_setting('current-period');
 
-		$ci_top_form = new Form('ci_top_form', 'registration');
+		$ci_top_form = new Form('ci_top_form', 'anmeldung');
 
 		$par_left_col_size = 347;
 		$par_right_col_size = 187;
@@ -155,7 +155,7 @@ class Checkin extends BF_Controller {
 					'Eine E-Mail mit Ihrer Kids-ID wurde an '.b($par_email->getValue()).' gesendet. '.
 					'Geben Sie diese unten ein, um sich anzumelden.']);
 				$par_login_email->setValue($par_email->getValue());
-				return redirect('registration');
+				return redirect('anmeldung');
 			}
 		}
 
@@ -347,14 +347,14 @@ class Checkin extends BF_Controller {
 		$current_period = $this->db_model->get_setting('current-period');
 		$parent_row = $this->get_parent_row($this->par_login_id);
 
-		$ci_top_form = new Form('ci_top_form', 'registration', 2, array('class'=>'input-table'));
+		$ci_top_form = new Form('ci_top_form', 'anmeldung', 2, array('class'=>'input-table'));
 		$go_back = imagebutton('go_back', '../img/bf-kids-logo3.png', ['style'=>'height: 34px; width: auto;']);
 		$go_back->autoEchoOff();
 
 		$par_left_col_size = 347;
 		$par_right_col_size = 187;
 
-		$ci_parent_form = new Form('ci_parent_form', 'registration');
+		$ci_parent_form = new Form('ci_parent_form', 'anmeldung');
 		$ci_parent_form->addHidden('par_id', $parent_row['par_id']);
 		$par_fullname = textinput('par_fullname', $parent_row['par_fullname'],
 			['placeholder'=>'Name', 'style'=>'width: '.($par_left_col_size - 40).'px;',
@@ -413,13 +413,13 @@ class Checkin extends BF_Controller {
 				$builder->where('par_id', $this->par_login_id);
 				$builder->update($data);
 				$this->set_success($par_fullname->getValue().' geändert');
-				return redirect('registration');
+				return redirect('anmeldung');
 			}
 		}
 
 		if ($logout_parent->submitted()) {
 			$this->set_parent_logged_out();
-			return redirect('registration');
+			return redirect('anmeldung');
 		}
 
 		if ($submit_kid->submitted()) {
@@ -458,7 +458,6 @@ class Checkin extends BF_Controller {
 			}
 
 			if (!$this->have_error()) {
-
 				$after_row = [
 					'kid_fullname' => $kid_fullname->getValue(),
 					'kid_birthday' => $kid_birthday->getDate('d.m.Y'),
@@ -471,7 +470,7 @@ class Checkin extends BF_Controller {
 						0, $err_prefix, $kid_id_v));
 					if (!$this->have_error()) {
 						$this->set_success($err_prefix.$kid_fullname->getValue().' angemeldet');
-						return redirect('registration');
+						return redirect('anmeldung');
 					}
 				}
 				else {
@@ -480,7 +479,7 @@ class Checkin extends BF_Controller {
 					$this->set_error($this->modify_kid($kid_id_v, $kid_row, $after_row, false, [ ], 0, $err_prefix));
 					if (!$this->have_error()) {
 						$this->set_success($err_prefix.$kid_fullname->getValue().' geändert');
-						return redirect('registration');
+						return redirect('anmeldung');
 					}
 				}
 			}
@@ -488,10 +487,10 @@ class Checkin extends BF_Controller {
 
 		if ($delete_kid->submitted()) {
 			$err_prefix = 'Kind '.$kid_nr_v.': ';
-			$this->remove_kid($kid_id_v);
+			$this->remove_kid($kid_id_v, $err_prefix);
 			if (!$this->have_error()) {
 				$this->set_success($err_prefix.$kid_fullname->getValue().' abgemeldet');
-				return redirect('registration');
+				return redirect('anmeldung');
 			}
 		}
 
@@ -656,7 +655,7 @@ class Checkin extends BF_Controller {
 		$kid_nr->setValue($kid_i);
 		$kid_id->setValue($row['kid_id']);
 
-		$kid_checkin_form = new Form('kid_checkin_form_'.$kid_i, 'registration', 2, array('class'=>'input-table'));
+		$kid_checkin_form = new Form('kid_checkin_form_'.$kid_i, 'anmeldung', 2, array('class'=>'input-table'));
 
 		$kid_fullname = textinput('kid_fullname_'.$kid_i, $row['kid_fullname'],
 			['placeholder'=>'Vorname und Nachname', 'style'=>'width: '.($kid_left_col_size - 40).'px;', 'before'=>$row['kid_fullname'],

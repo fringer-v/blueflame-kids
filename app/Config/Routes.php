@@ -6,8 +6,8 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Checkin::registration');
-$routes->get('registration', 'Checkin::registration');
-$routes->post('registration', 'Checkin::registration');
+$routes->get('anmeldung', 'Checkin::registration');
+$routes->post('anmeldung', 'Checkin::registration');
 $routes->get('login', 'Checkin::login');
 $routes->post('login', 'Checkin::login');
 

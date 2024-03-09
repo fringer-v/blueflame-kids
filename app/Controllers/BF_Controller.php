@@ -397,9 +397,13 @@ class BF_Controller extends BaseController {
 		return '';
 	}
 
-	public function remove_kid($kid_id_v)
+	public function remove_kid($kid_id_v, $err_prefix)
 	{
-		//...
+		$kid_row = $this->get_kid_row($kid_id_v);
+		if ($kid_row['kid_registered'] != REG_NO) {
+			$this->set_error($err_prefix.'Dieses Kind wird derzeit vom BlueFlame Kids-Team betreut');
+			return;
+		}
 		$builder = $this->db->table('bf_history');
 		$builder->where('hst_kid_id', $kid_id_v);
 		$builder->delete();
@@ -876,7 +880,7 @@ class BF_Controller extends BaseController {
 			//td(array('style'=>'width: 3px; padding: 0;'), nbsp());
 			//td($this->link('ipad', $title == 'iPad Registrierung'), 'iPad Registrierung');
 			td(array('style'=>'width: 3px; padding: 0;'), nbsp());
-			td($this->link('registration', $title == 'Mobile Checkin'), 'Mobile Checkin');
+			td($this->link('anmeldung', $title == 'Mobile Checkin'), 'Anmeldung');
 
 			hidden('login_full_name', $this->stf_login_name);
 			if ($title != 'Login') {
